@@ -247,7 +247,7 @@ function flickr_photo_page_url($owner, $id = NULL) {
 function flickr_photoset_page_url($owner, $id = NULL) {
   $nsid = is_array($owner) ? $owner['nsid']: $owner;
   if ($person = flickr_people_get_info($nsid)) {
-    return $person['photosurl']['_content'] . $id;
+    return $person['photosurl']['_content'] .'sets/'. $id;
   }
   else {
     return "http://flickr.com/photos/$nsid/sets/$id";
