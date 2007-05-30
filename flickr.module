@@ -121,10 +121,10 @@ function flickr_admin_settings() {
   $ageoptions = drupal_map_assoc($times, 'format_interval');
   $form['flickr_cache_duration'] = array(
     '#type' => 'select',
-    '#title' => t('Cache for'),
+    '#title' => t('Update interval'),
     '#options' => $ageoptions,
     '#default_value' => variable_get('flickr_cache_duration', 3600),
-    '#description' => t("Results from Flickr API requests will be cached for at least this long."),
+    '#description' => t("The refresh interval indicating how often you want to check cached Flickr API calls are up to date."),
   );
 
   // we need an api key before we can verify usernames

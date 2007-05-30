@@ -79,7 +79,10 @@ function flickr_request($method, $args, $cacheable = TRUE, $return_errors = FALS
   // If it's a cachable request, try to load a cached value.
   if ($cacheable) {
     if ($cache = cache_get("flickr_$arg_hash", 'cache')) {
-      return unserialize($cache->data);
+      // Check that the value is still "fresh".
+      if( $cache->expire > time() ) {
+        return unserialize($cache->data);
+      }
     }
   }
 
