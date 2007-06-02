@@ -187,10 +187,10 @@ function flickr_img($photo, $size = NULL, $attributes = NULL) {
       }
     }
     else {
-      $img_url = flickr_photo_img($photo, $size, $format);
+      $img_url = flickr_photo_img($photo, $size);
     }
   }
-  $title = is_array($p['title']) ? $p['title']['_content'] : $p['title'];
+  $title = is_array($photo['title']) ? $photo['title']['_content'] : $photo['title'];
   return theme('image', $img_url, $title, $title, $attributes, FALSE);
 }
 

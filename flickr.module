@@ -154,7 +154,7 @@ function flickr_admin_settings_validate($form_id, $form) {
     else {
       $user = flickr_user_find_by_username($uid);
       if (!$user) {
-        form_set_error('flickr_default_userid', t('%uid is not a Flickr user id and it does not appear to be a valid user name. Flickr reported %error-message', array('%uid' => $uid, '%error-message' => $response['message'])));
+        form_set_error('flickr_default_userid', t('%uid is not a Flickr user id and it does not appear to be a valid user name.', array('%uid' => $uid)));
       }
     }
   }
