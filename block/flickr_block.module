@@ -185,7 +185,7 @@ function _flickr_block_random($nsid, $show_n, $size) {
       // request a random page
       $photos = flickr_photos_search($nsid, rand(1, $page_count), array('per_page' => 500));
       // then select a random photo
-      $index = rand(0, count($photos['photo']));
+      $index = rand(0, count($photos['photo']) - 1);
       $output .= theme('flickr_block_photo', $photos['photo'][$index], $size);
     }
   }
