@@ -1,6 +1,5 @@
 ; $Id$
 name = Flickr tags
 description = Adds tags capability to Flickr module
-version = "$Name$"
 dependencies = flickr
 package = Flickr
