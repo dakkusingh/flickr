@@ -2,7 +2,7 @@
 // $Id$
 
 function flickr_block_uninstall() {
-  foreach (range(0,6) as $delta) {
+  foreach (range(0, 6) as $delta) {
     variable_del("flickr_block_{$delta}");
   }
 }
@@ -11,7 +11,7 @@ function flickr_block_uninstall() {
  * Move all the block settings into a single variable per block.
  */
 function flickr_block_update_1() {
-  foreach (range(0,6) as $delta) {
+  foreach (range(0, 6) as $delta) {
     $user = variable_get("flickr_block_{$delta}_user_id", FALSE);
     $show = variable_get("flickr_block_{$delta}_show_n", FALSE);
     $size = variable_get("flickr_block_{$delta}_size", FALSE);
