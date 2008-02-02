@@ -193,9 +193,9 @@ function _flickr_block_random($nsid, $show_n, $size) {
 }
 
 function theme_flickr_block_photo($p, $size = NULL) {
-  return theme_flickr_photo($p, $size);
+  return theme('flickr_photo',$p, $size);
 }
 
 function theme_flickr_block_photoset($ps, $owner, $size) {
-  return theme_flickr_photoset($ps, $owner, $size);
+  return theme('flickr_photoset',$ps, $owner, $size);
 }
