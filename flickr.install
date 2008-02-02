@@ -14,6 +14,15 @@ function flickr_install() {
         ) /*!40100 DEFAULT CHARACTER SET utf8 */;
       ');
       break;
+    case 'pgsql':
+      db_query('
+        CREATE TABLE {flickr_users} (
+          uid integer NOT NULL PRIMARY KEY,
+          nsid varchar(64) NOT NULL,
+          identifier varchar(64) NOT NULL
+        );
+      ');
+      break;
   }
 }
 
@@ -22,6 +31,9 @@ function flickr_uninstall() {
     case 'mysql':
     case 'mysqli':
       db_query('DROP TABLE IF EXISTS {flickr_users}');
+      break;
+    case 'pgsql':
+      db_query('DROP TABLE {flickr_users}');
       break;
   }
 }
