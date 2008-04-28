@@ -152,6 +152,9 @@ function flickrfield_field_formatter_info() {
  *
  */
 function flickrfield_field_formatter($field, $item, $formatter, $node) {
+  if (empty($item['id'])) {
+    return;
+  }
   require_once(drupal_get_path('module', 'flickr') .'/flickr.inc');
   switch ($item['type']) {
     case 'photo_id':
