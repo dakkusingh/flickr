@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 define('FLICKR_REST_ENDPOINT', 'http://api.flickr.com/services/rest/');
 require_once(drupal_get_path('module', 'flickr') .'/flickr.api.inc');
