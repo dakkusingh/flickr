@@ -1,6 +1,5 @@
 <?php
 
-// $Id$
 
 include(drupal_get_path('module', 'flickr') .'/flickr.inc');
 
