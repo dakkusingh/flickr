@@ -1,6 +1,5 @@
 <?php
 
-// $Id$
 
 require_once(drupal_get_path('module', 'flickr') .'/flickr.inc');
 

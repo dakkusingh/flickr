@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function flickr_install() {
   switch ($GLOBALS['db_type']) {
