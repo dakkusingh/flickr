@@ -189,8 +189,7 @@ function _flickr_block_recent($nsid, $show_n, $size) {
   $output = '';
   if ($photos = flickr_photos_search($nsid, 1, array('per_page' => $show_n))) {
     foreach ($photos['photo'] as $photo) {
-      $output .= theme('flickr_block_photo
-', $photo, $size);
+      $output .= theme('flickr_block_photo', $photo, $size);
     }
   }
   return $output;
@@ -295,3 +294,4 @@ function theme_flickr_block_photo($photo, $size = NULL) {
 function theme_flickr_block_photoset($photoset, $owner, $size) {
   return theme('flickr_photoset', $photoset, $owner, $size);
 }
+
