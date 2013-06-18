@@ -1,6 +1,6 @@
-name = Flickrfield
+name = Flickr Field
 description = Flickr CCK field to insert Flickr images into content.
 dependencies[] = flickr
 dependencies[] = content
-package = CCK
+package = Flickr
 core = 6.x
