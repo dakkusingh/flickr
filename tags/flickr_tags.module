@@ -99,7 +99,9 @@ function flickr_tags_list($account, $nsid = NULL) {
 function flickr_tags_photos($account, $tagstring) {
   global $pager_page_array, $pager_total, $pager_total_items;
 
-  drupal_add_css(drupal_get_path('module', 'flickr') .'/flickr.css');
+  if (variable_get('flickr_css', 1)) {
+    drupal_add_css(drupal_get_path('module', 'flickr') .'/flickr.css');
+  }
 
   $tag_arr = explode(',', $tagstring);
   $nsid = $account->flickr['nsid'];
