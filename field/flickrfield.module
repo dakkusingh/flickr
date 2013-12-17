@@ -112,28 +112,66 @@ function flickrfield_widget(&$form, &$form_state, $field, $items, $delta = 0) {
 }
 
 function flickrfield_process($element, $edit, $form_state, $form) {
-  $options = array();
-  $options['photo_id'] = t("Photo");
-  $options['set_id'] = t("Photoset");
-  $element['type'] = array(
-    '#type' => 'select',
-    '#title' => t('Item Type'),
-    '#default_value' => !empty($element['#value']['type']) ? $element['#value']['type'] : '',
-    '#options' => $options,
-  );
-  $element['id'] = array(
+  // Build the flickr URL from the flickr values in the database.
+  if (!empty($element['#value']['nsid']) && !empty($element['#value']['id'])) {
+    // We have a photo id.
+    if ($element['#value']['type'] == 'photo_id') {
+      $default_url = flickr_photo_page_url($element['#value']['nsid'], $element['#value']['id']);
+    } else { // .We have a set id.
+      $default_url = flickr_photoset_page_url($element['#value']['nsid'], $element['#value']['id']);
+    }
+  } else { // We have no id (thean an empty flickrfield).
+    $default_url = '';
+  }
+  $element['url'] = array(
     '#type' => 'textfield',
-    '#title' => t('Id'),
-    '#default_value' => !empty($element['#value']['id']) ? $element['#value']['id'] : '',
-  );
-  $element['nsid'] = array(
-    '#type' => 'textfield',
-    '#title' => t('User Id'),
-    '#default_value' => !empty($element['#value']['nsid']) ? $element['#value']['nsid'] : variable_get('flickr_default_userid', ''),
-    '#required' => $element['#required'],
-    '#description' => t("The user id of the Flickr user who owns the photos. If this is left blank, the sites's default user will be used. Current default id is @id.", array('@id' => variable_get('flickr_default_userid', ''))),
+    '#title' => 'Image or Photoset URL',
+    '#default_value' => $default_url,
+    '#description' => t('Enter the URL to the Flickr image or image set.'),
   );
   return $element;
+}
+
+function flickrfield_field($op, &$node, $field, &$items, $arg1, $arg2) {
+  switch ($op) {
+    case 'validate':
+      $form = $arg1;
+      if (!is_array($items)) {
+        return $items;
+      }
+      foreach ($items as $i => $item) {
+        if (empty($item['url'])) {
+          continue;
+        }
+        $info = flickr_get_info_by_url($item['url']);
+        if (!is_array($info)) {
+          form_set_error($field['field_name'], $info);
+          continue;
+        }
+      }
+      break;
+
+    case 'presave':
+      foreach ($items as $i => $item) {
+        $info = flickr_get_info_by_url($item['url']);
+        if (!is_array($info)) {
+          // Input was validated above. If we got here, it was simply an empty
+          // field.
+          continue;
+        }
+
+        $items[$i]['id'] = $info['id'];
+        if ($info['media'] == 'photo') {
+          $items[$i]['type'] = 'photo_id';
+          $items[$i]['nsid'] = $info['owner']['nsid'];
+        }
+        else {
+          $items[$i]['type'] = 'set_id';
+          $items[$i]['nsid'] = $info['owner'];
+        }
+      }
+      break;
+  }
 }
 
 function flickrfield_flickrid_process($element, $edit, $form_state, $form) {
@@ -156,7 +194,7 @@ function flickrfield_flickrid_process($element, $edit, $form_state, $form) {
  */
 function flickrfield_content_is_empty($item, $field) {
   if ($field['type'] == 'flickrfield') {
-  return empty($item['id']);
+  return empty($item['id']) && empty($item['url']);
   } else if ($field['type'] == 'flickrfield_photoset') {
     return empty($item['flickrid']);
   }
@@ -354,7 +392,7 @@ function theme_flickrfield_photoset($img, $photo_url, $formatter, $photo_data, $
 
   if (module_exists('flickr_sets')) {
     $photos = flickr_set_load($photo_data['id']);
-    
+
     foreach ((array) $photos['photoset']['photo'] as $photo) {
     //insert owner into $photo because theme_flickr_photo needs it
     $photo['owner'] = $photos['photoset']['owner'];
@@ -370,7 +408,7 @@ function theme_flickrfield_photoset($img, $photo_url, $formatter, $photo_data, $
     }
   } else {
     $title = is_array($photo_data['title']) ? $photo_data['title']['_content'] : $photo_data['title'];
-    
+
     if (arg(0) == 'node' && arg(1) == $node->nid) {
       $output .= '<div class="flickr-photoset-img">'. $img .'</div>';
     } else {
@@ -409,7 +447,7 @@ function theme_flickrfield_photoset_primaryphoto($img, $link, $set_url, $size, $
 
 /**
  * Theme for the form element.
- * 
+ *
  * The form is already rendered by the child elements by the time it comes back here,
  * just group each delta grouping into its own fieldset.
  */

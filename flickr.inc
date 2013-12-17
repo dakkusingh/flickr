@@ -39,7 +39,7 @@ function flickr_request($method, $args, $cacheable = TRUE, $return_errors = FALS
   foreach ($args as $k => $v){
     $encoded_params[] = urlencode($k) . '=' . urlencode($v);
   }
-  $url = FLICKR_REST_ENDPOINT .'?'. implode('&', $encoded_params);  
+  $url = FLICKR_REST_ENDPOINT .'?'. implode('&', $encoded_params);
 
   // If it's a cachable request, try to load a cached value.
   if ($cacheable) {
@@ -262,6 +262,64 @@ function flickr_photo_page_url($owner, $id = NULL) {
   }
   else {
     return "http://flickr.com/photos/$nsid/$id";
+  }
+}
+
+/**
+ * Given the URL to a flickr asset (set or photo), return info about that asset.
+ *
+ * @param string $url
+ *  The URL to the flickr asset, e.g. as returned by flickr_photoset_page_url()
+ *  or flickr_photo_page_url().
+ *
+ * @return mixed
+ *  string - If $url was empty or invalid, or Flickr API could not locate asset
+ *    info, return an error string.
+ *  array - Otherwise, return the info array from flickr_photoset_get_info() or
+ *    flickr_photo_get_info() as applicable.
+ */
+function flickr_get_info_by_url($url, $reset = FALSE) {
+  static $urls;
+  // Don't bother checking the same URL twice in a single page request.
+  if ($urls[$url] && !$reset) {
+    return $urls[$url];
+  }
+  if (empty($url)) {
+    $urls[$url] = t('Please enter a valid Flickr URL.');
+    return $urls[$url];
+  }
+  if (!valid_url($url)) {
+    $urls[$url] = t('Please enter a valid Flickr URL.');
+    return $urls[$url];
+  }
+  // Prepend the protocol if it's not there, so we can use parse_url().
+  if (strpos($url, 'http') !== 0) {
+    $url = 'http://' . $url;
+  }
+  $parts = parse_url($url);
+  if (strpos($parts['host'], 'flickr') === FALSE) {
+    $urls[$url] = t('Please enter a valid Flickr URL.');
+    return $urls[$url];
+  }
+  // Now, we only care about the path. Sanity-check the number of path elements.
+  $parts = explode('/', trim($parts['path'], '/'));
+  if (count($parts) < 3 || ($parts[2] == 'sets' && count($parts) < 4)) {
+    $urls[$url] = t('Unable to retrieve Flickr image or set. Please check the URL.');
+    return $urls[$url];
+  }
+  // Now that we're reasonably sure the URL is the correct format, see if the
+  // API can tell us about the asset.
+  if ($parts[2] == 'sets') {
+    $set_id = $parts[3];
+    $info = flickr_photoset_get_info($set_id);
+    $urls[$url] = $info ? $info : t('Unable to retrieve Flickr image or set. Please check the URL.');
+    return $urls[$url];
+  }
+  else {
+    $img_id = $parts[2];
+    $info = flickr_photo_get_info($img_id);
+    $urls[$url] = $info ? $info : t('Unable to retrieve Flickr image or set. Please check the URL.');
+    return $urls[$url];
   }
 }
 

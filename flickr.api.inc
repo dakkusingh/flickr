@@ -1,6 +1,6 @@
 <?php
 
-// TODO: Would like to implement a consistent naming for drupal wrapper functions around flick API methods 
+// TODO: Would like to implement a consistent naming for drupal wrapper functions around flick API methods
 // e.g covert a "." to an "underscore" only  i.e for flickr.photos.getInfo use flickr_photos_getinfo()
 
 /**
@@ -44,7 +44,7 @@ function flickr_photo_get_sizes($photo_id) {
 /**
  * @param $nsid
  *   nsid of the user whose photoset tags will be returned
- * @param $page   
+ * @param $page
  *   page of results to return
  *
  * @return
@@ -110,7 +110,7 @@ function flickr_photoset_get_list($nsid) {
 
 /**
  * @param $photoset_id
- * 
+ *
  *
  * @return
  *   response from the flickr method flickr.photosets.getPhotos
