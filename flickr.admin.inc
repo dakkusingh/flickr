@@ -34,21 +34,13 @@ function flickr_admin_settings() {
     '#description' => t("The refresh interval indicating how often you want to check cached Flickr API calls are up to date."),
   );
   $form['flickr_photos_per_page'] = array(
-    '#type' => 'select',
+    '#type' => 'textfield',
     '#title' => t('Number of photos per photoset'),
+    '#required' => TRUE,
     '#default_value' => variable_get('flickr_photos_per_page', '30'),
-    '#options' => array(
-      '10' => t('10'),
-      '30' => t('30'),
-      '50' => t('50'),
-      '100' => t('100'),
-      '150' => t('150'),
-      '200' => t('200'),
-      '300' => t('300'),
-      '400' => t('400'),
-      '500' => t('500'),
-    ),
-    '#description' => t("The number indicates how many photos of a photoset display in your nodes. After saving the configuration, <a href='?q=admin/settings/performance'>clear the cache</a>."),
+    '#description' => t('The number indicates how many photos of a photoset display in your nodes. After saving the configuration <a href="?q=admin/config/development/performance">clear the cache</a>.'),
+    '#size' => 3,
+    '#maxlength' => 3,
   );
   $form['flickr_css'] = array(
     '#type' => 'checkbox',
@@ -89,6 +81,7 @@ function flickr_admin_settings_validate($form, &$form_state) {
   $key = trim($form_state['values']['flickr_api_key']);
   $sec = trim($form_state['values']['flickr_api_secret']);
   $uid = trim($form_state['values']['flickr_default_userid']);
+  $limit = trim($form_state['values']['flickr_photos_per_page']);
 
   if ($key && (preg_match('/^[A-Fa-f\d]{32}$/', $key) != 1)) {
     form_set_error('flickr_api_key', t('This does not appear to be a Flickr API key.'));
@@ -106,6 +99,10 @@ function flickr_admin_settings_validate($form, &$form_state) {
         form_set_error('flickr_default_userid', t('%uid is not a Flickr user id and it does not appear to be a valid user name.', array('%uid' => $uid)));
       }
     }
+  }
+  // Validate the number of photos.
+  if (!is_numeric($limit) || $limit < 1) {
+    form_set_error('flickr_photos_per_page', t('Set a number from 1 to 999.'));
   }
 }
 
