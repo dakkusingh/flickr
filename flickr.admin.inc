@@ -50,22 +50,38 @@ function flickr_admin_settings() {
     ),
     '#description' => t("The number indicates how many photos of a photoset display in your nodes. After saving the configuration, <a href='?q=admin/settings/performance'>clear the cache</a>."),
   );
+  $form['flickr_css'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use flickr.css'),
+    '#default_value' => variable_get('flickr_css', 1),
+    '#description' => t('Uncheck to take care of the styling yourself in custom CSS.'),
+  );
+  $form['overlay_settings'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Overlay browser settings'),
+    '#description' => t('Leave empty to link directly to the Flickr photo page instead of opening the bigger version of the image.'),
+  );
+  $form['overlay_settings']['flickr_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('class'),
+    '#default_value' => variable_get('flickr_class', ''),
+    '#description' => t('E.g.: colorbox'),
+  );
+  $form['overlay_settings']['flickr_rel'] = array(
+    '#type' => 'textfield',
+    '#title' => t('rel'),
+    '#default_value' => variable_get('flickr_rel', ''),
+    '#description' => t('E.g.: gallery-all'),
+  );
   // we need an api key before we can verify usernames
   if (!$form['flickr_api_key']['#default_value']) {
     $form['flickr_default_userid']['#disabled'] = TRUE;
     $form['flickr_default_userid']['#description'] .= t(" Disabled until a valid API Key is set.");
   }
 
-  $form['flickr_css'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Use flickr.css'),
-    '#default_value' => variable_get('flickr_css', 1),
-    '#description' => t('Uncheck to take care of the styling yourself in custom CSS.'),
-  );  
-  
   // Add a submit handler before the system_settings_form submit handler.
   $form['#submit'] = array('flickr_admin_settings_submit');
-  
+
   return system_settings_form($form);
 }
 

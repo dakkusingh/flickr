@@ -3,6 +3,16 @@
 require_once(drupal_get_path('module', 'flickr') .'/flickr.inc');
 
 /**
+ * Implements hook_init().
+ */
+function flickr_init() {
+  // Determine the setting to use flickr.css or not.
+  if (variable_get('flickr_css', 1)) {
+    drupal_add_css(drupal_get_path('module', 'flickr') . '/flickr.css',  $type = 'module', $media = 'all', $preprocess = TRUE);
+  }
+}
+
+/**
  * Implementation of hook_help().
  */
 function flickr_help($section, $arg) {
@@ -160,10 +170,6 @@ function flickr_user($op, &$edit, &$account, $category = NULL) {
 }
 
 function flickr_photos($user = NULL) {
-  if (variable_get('flickr_css', 1)) {
-    drupal_add_css(drupal_get_path('module', 'flickr') .'/flickr.css');
-  }
-
   global $pager_page_array, $pager_total, $pager_total_items;
   //set this to something else if you want multiple pagers
   $element = 0;
@@ -204,11 +210,43 @@ function flickr_photos($user = NULL) {
 }
 
 function theme_flickr_photo($photo, $size = NULL, $format = NULL, $attributes = NULL) {
+  $class = variable_get('flickr_class', '');
+  $rel = variable_get('flickr_rel', '');
+  $url = flickr_photo_img($photo, 'z', $format); // For quick opening of the big version images remove the z, using 500px instead of 620px.
+  switch($size) {
+  case 's':
+    $width = '75';
+    break;
+  case 't':
+    $width = '100';
+    break;
+  case 'q':
+    $width = '150';
+    break;
+  case 'm':
+    $width = '240';
+    break;
+  case 'n':
+    $width = '320';
+    break;
+  default:
+    $width = '500';
+  }
   $img = flickr_img($photo, $size, $attributes);
   $photo_url = flickr_photo_page_url($photo['owner'], $photo['id']);
   $title = is_array($photo['title']) ? $photo['title']['_content'] : $photo['title'];
-  return l($img, $photo_url, array('attributes' => array('title' => $title, 'class' => 'flickr_photo'), 'absolute' => TRUE, 'html' => TRUE));
-
+  if ($size == 's') {
+    $credit = t('Flickr'); // The size is too small to add a title.
+  }
+  else {
+    $credit = $title;
+  }
+  if (variable_get('flickr_class', '') == NULL && variable_get('flickr_rel', '') == NULL) {
+    return l($img, $photo_url, array('attributes' => array('title' => $title), 'absolute' => TRUE, 'html' => TRUE));
+  }
+  else {
+    return '<span class="flickr-wrap">' . l($img, $url, array('attributes' => array('title' => $title, 'class' => $class, 'rel' => $rel), 'absolute' => TRUE, 'html' => TRUE)). '<span class="flickr-credit" style="width: ' . $width . 'px;">' . l($credit, $photo_url, array('attributes' => array('title' => t('View on Flickr. To enlarge click pic.'), 'target' => '_blank'))) . '</span></span>'; //Final step that generates the image with a link to the bigger version and a link to the Flickr page under it to comply with the TOS of Flickr.
+  }
 }
 
 function theme_flickr_photo_box($photo, $size = NULL, $format = NULL, $attributes = NULL) {
@@ -227,7 +265,7 @@ function theme_flickr_photo_box($photo, $size = NULL, $format = NULL, $attribute
 
 function theme_flickr_photos($uid, $photos) {
   $output = theme('pager', NULL, variable_get('flickr_photos_per_page', 20));
-  $output .= "<div class='flickr-photoset'>\n";  // TODO: is this correct ? 
+  $output .= "<div class='flickr-photoset'>\n";  // TODO: is this correct ?
   foreach ($photos['photo'] as $photo) {
     $output .= theme('flickr_photo_box', $photo, 'm');
   }
@@ -248,11 +286,11 @@ function theme_flickr_photoset($photoset, $owner, $size, $attributes = NULL) {
     $output .= '</div>';
 	return $output;
   } else {
-    $img = flickr_img($photoset, $size, $attributes);    
+    $img = flickr_img($photoset, $size, $attributes);
     $output = theme('pager', NULL, variable_get('flickr_photos_per_page', 20));
-    $photo_url = flickr_photoset_page_url($owner, $photoset['id']);    
+    $photo_url = flickr_photoset_page_url($owner, $photoset['id']);
     $output .= "<div class='flickr-photoset'>\n";
-    $title = is_array($photoset['title']) ? $photoset['title']['_content'] : $photoset['title'];   
+    $title = is_array($photoset['title']) ? $photoset['title']['_content'] : $photoset['title'];
     return l($img, $photo_url, array('attributes' => array('title' => $title), 'absolute' => TRUE, 'html' => TRUE));
   }
 }
