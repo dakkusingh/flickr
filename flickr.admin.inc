@@ -42,6 +42,25 @@ function flickr_admin_settings() {
     '#size' => 3,
     '#maxlength' => 3,
   );
+  if (module_exists('flickr_filter')) {
+    $form['flickr_default_size'] = array(
+      '#type' => 'select',
+      '#title' => t('Default size'),
+      '#default_value' => variable_get('flickr_default_size', 'm'),
+      '#options' => array(
+        's' => t('s: 75 px square'),
+        't' => t('t: 100 px on longest side'),
+        'q' => t('q: 150 px square'),
+        'm' => t('m: 240 px on longest side'),
+        'n' => t('n: 320 px on longest side (!)'),
+        '-' => t('-: 500 px on longest side'),
+        'z' => t('z: 640 px on longest side'),
+        'c' => t('c: 800 px on longest side (!)'),
+        'b' => t('b: 1024 px on longest side'),
+      ),
+      '#description' => t('A default Flickr size to use. This will be used when no size is specified, for example [flickr-photo:id=3711935987].<br />After saving the configuration, <a href="?q=admin/settings/performance">clear the cache</a>.<br />!: TAKE CARE, n (320px) and c (800px) sizes are missing on many "older" Flickr images!'),
+    );
+  }
   $form['flickr_css'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use flickr.css'),
