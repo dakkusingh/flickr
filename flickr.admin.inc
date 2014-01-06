@@ -38,7 +38,7 @@ function flickr_admin_settings() {
     '#title' => t('Number of photos per photoset'),
     '#required' => TRUE,
     '#default_value' => variable_get('flickr_photos_per_page', '30'),
-    '#description' => t('The number indicates how many photos of a photoset display in your nodes. After saving the configuration <a href="?q=admin/config/development/performance">clear the cache</a>.'),
+    '#description' => t('The number indicates how many photos of a photoset display in your nodes. After saving the configuration <a href="?q=admin/settings/performance">clear the cache</a>.'),
     '#size' => 3,
     '#maxlength' => 3,
   );

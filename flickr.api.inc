@@ -97,13 +97,20 @@ function flickr_photoset_get_info($photoset_id) {
  *   response from the flickr method flickr.photosets.getList
  *   (http://www.flickr.com/services/api/flickr.photosets.getList.html)
  */
-function flickr_photoset_get_list($nsid) {
-  $response = flickr_request(
-    'flickr.photosets.getList',
-    array('user_id' => $nsid)
+function flickr_photoset_get_list($nsid, $page = 1, $other_args = array()) {
+  $args = array (
+    'user_id' => $nsid,
+    'page' => $page,
   );
+
+  //set per_page to flickr module default if it is not specified in $other_args
+  if (!isset($other_args['per_page'])) {
+    $args['per_page'] = variable_get('flickr_photos_per_page', 20);
+  }
+
+  $response = flickr_request('flickr.photosets.getList', array_merge($args, $other_args));
   if ($response) {
-    return $response['photosets']['photoset'];
+    return $response['photosets'];
   }
   return FALSE;
 }
