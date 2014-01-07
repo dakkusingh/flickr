@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implementation of hook_settings
+ * Implements hook_settings().
  */
 function flickr_admin_settings() {
   $form['flickr_api_key'] = array(
@@ -24,7 +24,19 @@ function flickr_admin_settings() {
     '#default_value' => variable_get('flickr_default_userid', ''),
     '#description' => t("An, optional, default Flickr username or user id. This will be used when no user is specified."),
   );
-  $times = array(900, 1800, 2700, 3600, 7200, 10800, 14400, 18000, 21600, 43200, 86400);
+  $times = array(
+    900,
+    1800,
+    2700,
+    3600,
+    7200,
+    10800,
+    14400,
+    18000,
+    21600,
+    43200,
+    86400,
+  );
   $ageoptions = drupal_map_assoc($times, 'format_interval');
   $form['flickr_cache_duration'] = array(
     '#type' => 'select',
@@ -67,6 +79,44 @@ function flickr_admin_settings() {
     '#default_value' => variable_get('flickr_css', 1),
     '#description' => t('Uncheck to take care of the styling yourself in custom CSS.'),
   );
+  $form['info_settings'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Flickr info to use'),
+  );
+  $form['info_settings']['flickr_title_suppress_on_small'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Minimum image width to display a title caption.'),
+    '#required' => TRUE,
+    '#default_value' => variable_get('flickr_title_suppress_on_small', '100'),
+    '#description' => t('Small images have liitle space for a title caption. Replace it with the text "Flickr" that links to the photo page on Flickr to comply with their <a href="http://www.flickr.com/guidelines.gne" title="Flickr Community Guidelines">Guidelines</a>.<br />After saving the configuration <a href="?q=admin/config/development/performance">clear the cache</a>.'),
+    '#field_suffix' => t('px'),
+    '#size' => 3,
+    '#maxlength' => 3,
+  );
+  $form['info_settings']['flickr_metadata_suppress_on_small'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Minimum image width to display date, location and photographer under the caption.'),
+    '#required' => TRUE,
+    '#default_value' => variable_get('flickr_metadata_suppress_on_small', '150'),
+    '#description' => t('Suppress extra info on small images. After saving the configuration <a href="?q=admin/config/development/performance">clear the cache</a>.'),
+    '#field_suffix' => t('px'),
+    '#size' => 3,
+    '#maxlength' => 3,
+  );
+  $form['info_settings']['flickr_info_overlay'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Info to include when enlarging the image'),
+    '#default_value' => variable_get('flickr_info_overlay', array(
+      'title' => 'title',
+      'metadata' => 'metadata',
+      'description' => 'description',
+    )),
+    '#options' => array(
+      'title' => t('Title'),
+      'metadata' => t('Date, location and photographer'),
+      'description' => t('Description'),
+    ),
+  );
   $form['overlay_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Overlay browser settings'),
@@ -84,10 +134,24 @@ function flickr_admin_settings() {
     '#default_value' => variable_get('flickr_rel', ''),
     '#description' => t('E.g.: gallery-all'),
   );
-  // we need an api key before we can verify usernames
+  $form['overlay_settings']['flickr_opening_size'] = array(
+    '#type' => 'select',
+    '#title' => t('Image size to open'),
+    '#default_value' => variable_get('flickr_opening_size', ''),
+    '#options' => array(
+      'm' => t('m: 240 px on longest side'),
+      'n' => t('n: 320 px on longest side (!)'),
+      '' => t('-: 500 px on longest side'),
+      'z' => t('z: 640 px on longest side'),
+      'c' => t('c: 800 px on longest side (!)'),
+      'b' => t('b: 1024 px on longest side'),
+    ),
+    '#description' => t('The image size to open in the overlay browser when clicking the image. Larger sizes make navigating to next and previous pictures slower.<br />After saving the configuration, <a href="?q=admin/config/development/performance">clear the cache</a>.<br />!: TAKE CARE, n (320px) and c (800px) sizes are missing on many "older" Flickr images!'),
+  );
+  // We need an api key before we can verify usernames.
   if (!$form['flickr_api_key']['#default_value']) {
     $form['flickr_default_userid']['#disabled'] = TRUE;
-    $form['flickr_default_userid']['#description'] .= t(" Disabled until a valid API Key is set.");
+    $form['flickr_default_userid']['#description'] .= ' ' . t('Disabled until a valid API Key is set.');
   }
 
   // Add a submit handler before the system_settings_form submit handler.
@@ -100,8 +164,16 @@ function flickr_admin_settings_validate($form, &$form_state) {
   $key = trim($form_state['values']['flickr_api_key']);
   $sec = trim($form_state['values']['flickr_api_secret']);
   $uid = trim($form_state['values']['flickr_default_userid']);
-  $limit = trim($form_state['values']['flickr_photos_per_page']);
-
+  $limit1 = trim($form_state['values']['flickr_photos_per_page']);
+  $limit2 = trim($form_state['values']['flickr_title_suppress_on_small']);
+  $limit3 = trim($form_state['values']['flickr_metadata_suppress_on_small']);
+  if (!is_numeric($limit1) || $limit1 < 1) {
+    form_set_error('flickr_photos_per_page', t('Set a number from 1 to 999.'));
+  }
+  // Validate the minimum width to suppress title caption.
+  if (!is_numeric($limit2) || $limit2 < 0) {
+    form_set_error('flickr_title_suppress_on_small', t('Set a width from 0 to 999 px.'));
+  }
   if ($key && (preg_match('/^[A-Fa-f\d]{32}$/', $key) != 1)) {
     form_set_error('flickr_api_key', t('This does not appear to be a Flickr API key.'));
   }
@@ -110,7 +182,7 @@ function flickr_admin_settings_validate($form, &$form_state) {
   }
   if ($uid) {
     if (flickr_is_nsid($uid)) {
-      // it's already a uid
+      // It's already a uid.
     }
     else {
       $user = flickr_user_find_by_username($uid);
@@ -120,19 +192,27 @@ function flickr_admin_settings_validate($form, &$form_state) {
     }
   }
   // Validate the number of photos.
-  if (!is_numeric($limit) || $limit < 1) {
+  if (!is_numeric($limit1) || $limit1 < 1) {
     form_set_error('flickr_photos_per_page', t('Set a number from 1 to 999.'));
+  }
+  // Validate the minimum width to suppress title caption.
+  if (!is_numeric($limit2) || $limit2 < 0) {
+    form_set_error('flickr_title_suppress_on_small', t('Set a width from 0 to 999 px.'));
+  }
+  // Validate the minimum width to suppress metadata caption.
+  if (!is_numeric($limit2) || $limit3 < 0) {
+    form_set_error('flickr_metadata_suppress_on_small', t('Set a width from 0 to 999 px.'));
   }
 }
 
 function flickr_admin_settings_submit($form, &$form_state) {
-  // clean up the data ...
+  // Clean up the data.
   $form_state['values']['flickr_api_key'] = trim($form_state['values']['flickr_api_key']);
   $form_state['values']['flickr_api_secret'] = trim($form_state['values']['flickr_api_secret']);
   $form_state['values']['flickr_photos_per_page'] = trim($form_state['values']['flickr_photos_per_page']);
   $form_state['values']['flickr_default_userid'] = trim($form_state['values']['flickr_default_userid']);
 
-  // ... replace the usernames with a user id ...
+  // Replace the usernames with a user id.
   if (!flickr_is_nsid($form_state['values']['flickr_default_userid'])) {
     $username = $form_state['values']['flickr_default_userid'];
     if ($user = flickr_user_find_by_username($username)) {
@@ -141,4 +221,3 @@ function flickr_admin_settings_submit($form, &$form_state) {
     }
   }
 }
-

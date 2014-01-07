@@ -1,7 +1,7 @@
 <?php
 
 define('FLICKR_REST_ENDPOINT', 'http://api.flickr.com/services/rest/');
-require_once(drupal_get_path('module', 'flickr') .'/flickr.api.inc');
+require_once(drupal_get_path('module', 'flickr') . '/flickr.api.inc');
 
 /**
  * Submit a request to Flickr.
@@ -25,7 +25,7 @@ function flickr_request($method, $args, $cacheable = TRUE, $return_errors = FALS
   $args['format'] = 'php_serial';
   ksort($args);
 
-  // Build an argument hash API signing (we'll also use it for the cache id)
+  // Build an argument hash API signing (we'll also use it for the cache id).
   $arg_hash = '';
   foreach ($args as $k => $v) {
     $arg_hash .= $k . $v;
@@ -36,16 +36,16 @@ function flickr_request($method, $args, $cacheable = TRUE, $return_errors = FALS
   }
 
   // Build the URL.
-  foreach ($args as $k => $v){
+  foreach ($args as $k => $v) {
     $encoded_params[] = urlencode($k) . '=' . urlencode($v);
   }
-  $url = FLICKR_REST_ENDPOINT .'?'. implode('&', $encoded_params);
+  $url = FLICKR_REST_ENDPOINT . '?' . implode('&', $encoded_params);
 
   // If it's a cachable request, try to load a cached value.
   if ($cacheable) {
     if ($cache = cache_get("flickr_$arg_hash", 'cache')) {
       // Check that the value is still "fresh".
-      if( $cache->expire > time() ) {
+      if ($cache->expire > time()) {
         return unserialize($cache->data);
       }
     }
@@ -158,13 +158,17 @@ function flickr_img($photo, $size = NULL, $attributes = NULL) {
       $img_url = flickr_photo_img($photo, $size);
     }
   }
-  $title = is_array($photo['title']) ? $photo['title']['_content'] : $photo['title'];
+  $info = !is_array($photo['title']) ? flickr_photo_get_info($photo['id']) : '';
+  $title = is_array($photo['title']) ? str_replace('"', "'", htmlspecialchars_decode(strip_tags($photo['description']['_content']))) : str_replace('"', "'", htmlspecialchars_decode(strip_tags($info['description']['_content'])));
+  if (empty($title) == 'title') {
+    $title = $photo['title'];
+  }
   return theme('image', $img_url, $title, $title, $attributes, FALSE);
 }
 
 /**
  * Create the url to $photo with size $size using the correct image farm
- * from the $photo variable
+ * from the $photo variable.
  *
  * @param $photo
  *   photo to which the url should point
@@ -177,19 +181,19 @@ function flickr_img($photo, $size = NULL, $attributes = NULL) {
  *   url for $photo with the correct size and format
  */
 function flickr_photo_img($photo, $size = NULL, $format = NULL) {
-  // early images don't have a farm setting so default to 1.
+  // Early images don't have a farm setting so default to 1.
   $farm = isset($photo['farm']) ? $photo['farm'] : 1;
   $server = $photo['server'];
   // photoset's use primary instead of id to specify the image.
   $id = isset($photo['primary']) ? $photo['primary'] : $photo['id'];
   $secret = $photo['secret'];
 
-  return "http://farm{$farm}.static.flickr.com/{$server}/{$id}_{$secret}" .($size ? "_$size." : '.') . ($size == 'o' ? $format : 'jpg');
+  return "http://farm{$farm}.static.flickr.com/{$server}/{$id}_{$secret}" . ($size ? "_$size." : '.') . ($size == 'o' ? $format : 'jpg');
 }
 
 /**
  * Return a list of all possible photo sizes with the right
- * description and label
+ * description and label.
  *
  * @return An array of photo sizes
  */
@@ -241,7 +245,7 @@ function flickr_photo_sizes() {
     ),
     'o' => array(
       'label' => 'Original',
-      'description' => t('Original image')
+      'description' => t('Original image'),
     ),
   );
 };
@@ -269,14 +273,14 @@ function flickr_photo_page_url($owner, $id = NULL) {
  * Given the URL to a flickr asset (set or photo), return info about that asset.
  *
  * @param string $url
- *  The URL to the flickr asset, e.g. as returned by flickr_photoset_page_url()
- *  or flickr_photo_page_url().
+ *   The URL to the flickr asset, e.g. as returned by flickr_photoset_page_url()
+ *   or flickr_photo_page_url().
  *
  * @return mixed
- *  string - If $url was empty or invalid, or Flickr API could not locate asset
- *    info, return an error string.
- *  array - Otherwise, return the info array from flickr_photoset_get_info() or
- *    flickr_photo_get_info() as applicable.
+ *   string - If $url was empty or invalid, or Flickr API could not locate asset
+ *     info, return an error string.
+ *   array - Otherwise, return the info array from flickr_photoset_get_info() or
+ *     flickr_photo_get_info() as applicable.
  */
 function flickr_get_info_by_url($url, $reset = FALSE) {
   static $urls;
@@ -333,9 +337,9 @@ function flickr_get_info_by_url($url, $reset = FALSE) {
  *   url for the photoset page of photoset $id of owner $owner
  */
 function flickr_photoset_page_url($owner, $id = NULL) {
-  $nsid = is_array($owner) ? $owner['nsid']: $owner;
+  $nsid = is_array($owner) ? $owner['nsid'] : $owner;
   if ($person = flickr_people_get_info($nsid)) {
-    return $person['photosurl']['_content'] .'sets/'. $id;
+    return $person['photosurl']['_content'] . 'sets/' . $id;
   }
   else {
     return "http://flickr.com/photos/$nsid/sets/$id";
@@ -343,7 +347,7 @@ function flickr_photoset_page_url($owner, $id = NULL) {
 }
 
 /**
- * Tries to match an 'identifier' onto a flickr nsid
+ * Tries to match an 'identifier' onto a flickr nsid.
  *
  * This function will first see whether $identifier is already
  * a nsid (format check only, no api call).  If it is not and the
@@ -362,7 +366,7 @@ function flickr_photoset_page_url($owner, $id = NULL) {
  */
 function flickr_user_find_by_identifier($identifier) {
   if (flickr_is_nsid($identifier)) {
-    //identifier is an NSID
+    // Identifier is an NSID.
     return $identifier;
   }
   if (valid_email_address($identifier) && ($user = flickr_user_find_by_email($identifier))) {
@@ -379,8 +383,6 @@ function flickr_is_nsid($id) {
   return preg_match('/^\d+@N\d+$/', $id);
 }
 
-
-
 function flickr_tag_request_args($tags = array(), $mode = 'all') {
   $args = array();
   if (!empty($tags)) {
@@ -391,21 +393,20 @@ function flickr_tag_request_args($tags = array(), $mode = 'all') {
 }
 
 /**
- * Check if the response from the Flickr api call was an error
+ * Check if the response from the Flickr api call was an error.
  *
  * @param $response
  *   response to check
  *
  * @return
- *    true if the response is an error message
+ *   true if the response is an error message
  */
 function flickr_response_has_error($response) {
   return !(isset($response['stat']) && $response['stat'] == 'ok');
 }
 
 /**
- * Display an error message to flickr administrators and write an error to
- * watchdog.
+ * Display error message to flickr administrators and write error to watchdog.
  *
  * @param $error_message
  *   error message to display
@@ -414,7 +415,7 @@ function flickr_set_error($error_message) {
   if (is_array($error_message)) {
     $message = t('Flickr error @error_id: %flickr_error', array(
       '@error_id' => $error_message['code'],
-      '%flickr_error'=> $error_message['message'],
+      '%flickr_error' => $error_message['message'],
     ));
   }
   else {
@@ -426,4 +427,3 @@ function flickr_set_error($error_message) {
   }
   watchdog('flickr', $message, array(), WATCHDOG_WARNING);
 }
-
