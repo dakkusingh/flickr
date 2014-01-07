@@ -1,7 +1,7 @@
 <?php
 
 function flickr_block_uninstall() {
-  foreach (range(0, 6) as $delta) {
+  foreach (range(0, 11) as $delta) {
     variable_del("flickr_block_{$delta}");
   }
 }
