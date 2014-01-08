@@ -161,7 +161,8 @@ function flickr_img($photo, $size = NULL, $attributes = NULL) {
   $info = !is_array($photo['title']) ? flickr_photo_get_info($photo['id']) : '';
   $title = is_array($photo['title']) ? str_replace('"', "'", htmlspecialchars_decode(strip_tags($photo['description']['_content']))) : str_replace('"', "'", htmlspecialchars_decode(strip_tags($info['description']['_content'])));
   if (empty($title) == 'title') {
-    $title = $photo['title'];
+  // Make sure we are not passing an array where a string is expected.
+  $title = is_array($photo['title']) ? str_replace('"', "'", htmlspecialchars_decode(strip_tags($photo['title']['_content']))) : $photo['title'];
   }
   return theme('image', $img_url, $title, $title, $attributes, FALSE);
 }
