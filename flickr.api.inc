@@ -1,8 +1,7 @@
 <?php
-
-// TODO: Would like to implement a consistent naming for drupal wrapper functions around flick API methods
-// e.g covert a "." to an "underscore" only  i.e for flickr.photos.getInfo use flickr_photos_getinfo()
-
+// TODO: Would like to implement a consistent naming for drupal wrapper
+// functions around flick API methods e.g covert a "." to an "underscore" only
+// i.e for flickr.photos.getInfo use flickr_photos_getinfo()
 /**
  * @param $photo_id
  *   id of the photo to get info about
@@ -52,13 +51,14 @@ function flickr_photo_get_sizes($photo_id) {
  *   (http://www.flickr.com/services/api/flickr.photos.search.html)
  */
 
-function flickr_photos_search($nsid, $page = 1, $other_args = array()){
-  $args = array (
+function flickr_photos_search($nsid, $page = 1, $other_args = array()) {
+  $args = array(
     'user_id' => $nsid,
     'page' => $page,
   );
 
-  //set per_page to flickr module default if it is not specified in $other_args
+  // Set per_page to flickr module default if it is not specified in
+  // $other_args.
   if (!isset($other_args['per_page'])) {
     $args['per_page'] = variable_get('flickr_photos_per_page', 20);
   }
@@ -128,12 +128,13 @@ function flickr_photoset_get_info($photoset_id) {
  *   (http://www.flickr.com/services/api/flickr.photosets.getList.html)
  */
 function flickr_photoset_get_list($nsid, $page = 1, $other_args = array()) {
-  $args = array (
+  $args = array(
     'user_id' => $nsid,
     'page' => $page,
   );
 
-  //set per_page to flickr module default if it is not specified in $other_args
+  // Set per_page to flickr module default if it is not specified in
+  // $other_args.
   if (!isset($other_args['per_page'])) {
     $args['per_page'] = variable_get('flickr_photos_per_page', 20);
   }
@@ -154,13 +155,11 @@ function flickr_photoset_get_list($nsid, $page = 1, $other_args = array()) {
  *   (http://www.flickr.com/services/api/flickr.photosets.getPhotos.html)
  */
 function flickr_photoset_get_photos($photoset_id) {
-  $response = flickr_request('flickr.photosets.getPhotos',
-  array(
+  $response = flickr_request('flickr.photosets.getPhotos', array(
     'photoset_id' => $photoset_id,
     'per_page' => 500,
     'extras' => 'owner',
-    )
-  );
+  ));
   if ($response) {
     return $response;
   }
@@ -238,8 +237,8 @@ function flickr_user_find_by_email($email) {
  *   response from the flickr method flickr.tags.getListUserPopular
  *   (http://www.flickr.com/services/api/flickr.tags.getListUserPopular.html)
  */
-function flickr_tags_get_list_user_popular($nsid, $count=NULL) {
-  $args = array('user_id'=>$nsid);
+function flickr_tags_get_list_user_popular($nsid, $count = NULL) {
+  $args = array('user_id' => $nsid);
   if ($count != NULL) {
     $args['count'] = $count;
   }
@@ -258,7 +257,7 @@ function flickr_tags_get_list_user_popular($nsid, $count=NULL) {
  *   response from the flickr method flickr.tags.getListUser
  *   (http://www.flickr.com/services/api/flickr.tags.getListUser.html)
  */
-function flickr_tags_get_list_user($nsid){
+function flickr_tags_get_list_user($nsid) {
   $response = flickr_request(
     'flickr.tags.getListUser',
     array('user_id' => $nsid)
@@ -277,14 +276,15 @@ function flickr_tags_get_list_user($nsid){
  * @return
  *   response from the flickr method flickr.groups.pools.getPhotos
  *   (http://www.flickr.com/services/api/flickr.groups.pools.getPhotos.html)
-*/
+ */
 function flickr_get_group_photos($nsid, $page = 1, $other_args = array()){ // TODO change name to flickr_groups_pools_get_photos() ?
-  $args = array (
+  $args = array(
     'group_id' => $nsid,
     'page' => $page,
   );
 
-  //set per_page to flickr module default if it is not specified in $other_args
+  // Set per_page to flickr module default if it is not specified in
+  // $other_args.
   if (!isset($other_args['per_page'])) {
     $args['per_page'] = variable_get('flickr_photos_per_page', 20);
   }

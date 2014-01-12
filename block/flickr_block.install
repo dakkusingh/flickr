@@ -15,7 +15,7 @@ function flickr_block_update_1() {
     $show = variable_get("flickr_block_{$delta}_show_n", FALSE);
     $size = variable_get("flickr_block_{$delta}_size", FALSE);
     if ($user || $show || $size) {
-      variable_set('flickr_block_'. $delta, array(
+      variable_set('flickr_block_' . $delta, array(
         'user_id' => $user,
         'show_n' => (int) $show,
         'size' => $size,
