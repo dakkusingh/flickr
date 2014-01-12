@@ -8,7 +8,7 @@ function flickr_block($op = 'list', $delta = 0, $edit = array()) {
     case 'list':
     // User profile page blocks.
     $blocks[0]['info'] = t("User profile page recent Flickr photos");
-    $blocks[1]['info'] = t("User profile page Flickr photosets");
+    $blocks[1]['info'] = t("User profile page recent Flickr photosets");
     $blocks[2]['info'] = t("User profile page random Flickr photos");
 
       // Site wide blocks.
@@ -53,22 +53,30 @@ function flickr_block($op = 'list', $delta = 0, $edit = array()) {
       $form = array();
       $default_userid = variable_get('flickr_default_userid', '');
       $user_id = array_key_exists('user_id', $settings) ? $settings['user_id'] : '';
+      $default = $user_id;
+      if (!empty($default)) {
+        $info = flickr_people_get_info($default);
+        $default = $info['username']['_content'];
+      }
       // Require a user id if the site-wide default user has not been set.
       if (empty($default_userid)) {
         $form["flickr_block_{$delta}_user_id"] = array(
           '#type' => 'textfield',
           '#title' => t('Flickr User ID'),
-          '#default_value' => $user_id,
+          '#default_value' => $default,
           '#required' => TRUE,
-          '#description' => t("The user id of a Flickr user. Note that the sites's default Flickr user id has not been set."),
+          '#description' => t("The user id of a Flickr user (ID number, username or email). Note that the sites's default Flickr user id has not been set."),
+          '#element_validate' => array('flickr_userid_block_validate'),
         );
       }
       else {
+        $info = flickr_people_get_info(variable_get('flickr_default_userid', ''));
         $form["flickr_block_{$delta}_user_id"] = array(
           '#type' => 'textfield',
           '#title' => t('Flickr User Id'),
-          '#default_value' => $user_id,
-          '#description' => t("The user id of a Flickr user. If this is left blank, the sites's default user will be used. Current default id is") . " " . $default_userid,
+          '#default_value' => $default,
+          '#description' => t("A Flickr user ID (ID number, username or email). If this is left blank, the sites's default user will be used. The current default Flickr user is") . " '<em>" . $info['username']['_content'] . "</em>'.",
+          '#element_validate' => array('flickr_userid_block_validate'),
         );
       }
 
@@ -218,7 +226,7 @@ function flickr_block($op = 'list', $delta = 0, $edit = array()) {
         case 11:
           unset($form["flickr_block_{$delta}_group_id"]);
           $form["flickr_block_{$delta}_tag"]['#title'] = t('Show photos having this tag');
-          $form["flickr_block_{$delta}_tag"]['#description'] = t("Will select random photos from the user's photosets having this tag");
+          $form["flickr_block_{$delta}_tag"]['#description'] = t("Will select random photos from the user's photos having this tag");
           $form["flickr_block_{$delta}_tag"]['#required'] = TRUE;
           break;
       }
@@ -247,6 +255,20 @@ function flickr_block($op = 'list', $delta = 0, $edit = array()) {
         case 5:
         case 6:
         case 9:
+      $userid = $edit["flickr_block_{$delta}_user_id"];
+      if (!empty($userid)) {
+        if (!flickr_is_nsid($edit["flickr_block_{$delta}_user_id"])) {
+          if ($user = flickr_user_find_by_identifier($userid)) {
+            drupal_set_message(t("The Flickr user associated with '%userid' has internally been replaced with the corresponding Flickr ID '%uid'.", array('%userid' => $edit["flickr_block_{$delta}_user_id"], '%uid' => $user)));
+            $edit["flickr_block_{$delta}_user_id"] = $user;
+          }
+        }
+        else {
+          $info = flickr_people_get_info($edit["flickr_block_{$delta}_user_id"]);
+          drupal_set_message(t("The Flickr user associated with '%uid' will be shown to you as Flickr user '%userid'.", array('%uid' => $edit["flickr_block_{$delta}_user_id"], '%userid' => $info['username']['_content'])));
+
+        }
+      }
           variable_set('flickr_block_' . $delta, array(
             'user_id' => $edit["flickr_block_{$delta}_user_id"],
             'show_n' => (int) $edit["flickr_block_{$delta}_show_n"],
@@ -283,6 +305,20 @@ function flickr_block($op = 'list', $delta = 0, $edit = array()) {
           break;
 
         case 11:
+      $userid = $edit["flickr_block_{$delta}_user_id"];
+      if (!empty($userid)) {
+        if (!flickr_is_nsid($edit["flickr_block_{$delta}_user_id"])) {
+          if ($user = flickr_user_find_by_identifier($userid)) {
+            drupal_set_message(t("The Flickr user associated with '%userid' has internally been replaced with the corresponding Flickr ID '%uid'.", array('%userid' => $edit["flickr_block_{$delta}_user_id"], '%uid' => $user)));
+            $edit["flickr_block_{$delta}_user_id"] = $user;
+          }
+        }
+        else {
+          $info = flickr_people_get_info($edit["flickr_block_{$delta}_user_id"]);
+          drupal_set_message(t("The Flickr user associated with '%uid' will be shown to you as Flickr user '%userid'.", array('%uid' => $edit["flickr_block_{$delta}_user_id"], '%userid' => $info['username']['_content'])));
+
+        }
+      }
           variable_set('flickr_block_' . $delta, array(
             'user_id' => $edit["flickr_block_{$delta}_user_id"],
             'tag' => $edit["flickr_block_{$delta}_tag"],
@@ -360,7 +396,7 @@ function flickr_block($op = 'list', $delta = 0, $edit = array()) {
           break;
 
         case 6:
-          $block['subject'] = t('Flickr group photos');
+          $block['subject'] = t('Flickr recent group photos');
           $block['content'] = _flickr_block_group_recent($settings['user_id'], $settings['show_n'], $settings['size'], $settings['media']);
           break;
 
@@ -393,6 +429,23 @@ function flickr_block($op = 'list', $delta = 0, $edit = array()) {
   }
 }
 
+/**
+ * Validate user input.
+ * Validate user input on 'user Flickr ID'.
+  */
+function flickr_userid_block_validate($element) {
+  $uid = trim($element['#value']);
+  if ($uid) {
+    $user = flickr_user_find_by_identifier($uid);
+    if (!$user) {
+      form_set_error('flickr_block_{$delta}_user_id', t('<strong>Flickr User Id</strong>: %uid does not appear to be a valid Flickr user.', array('%uid' => $uid)));
+    }
+  }
+}
+
+/**
+ * Validate user input on 'number shown'.
+ */
 function flickr_block_show_n_validate($element) {
   if (!is_numeric($element['#value']) || $element['#value'] < 1) {
     form_set_error('flickr_block_{$delta}_show_n', t('Set a number from 1 to 99.'));
