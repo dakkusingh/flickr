@@ -1,4 +1,4 @@
 name = Flickr
-description = Flickr integration.
+description = Embeds images hosted on Flickr with a link to the corresponding Flickr page.
 package = Flickr
 core = 6.x

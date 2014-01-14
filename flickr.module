@@ -3,25 +3,23 @@
 require_once(drupal_get_path('module', 'flickr') . '/flickr.inc');
 
 /**
+ * Implements hook_help().
+ */
+function flickr_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#flickr':
+      // Return a line-break version of the README.txt.
+      return _filter_autop(file_get_contents(dirname(__FILE__) . '/README.txt'));
+  }
+}
+
+/**
  * Implements hook_init().
  */
 function flickr_init() {
   // Determine the setting to use flickr.css or not.
   if (variable_get('flickr_css', 1)) {
     drupal_add_css(drupal_get_path('module', 'flickr') . '/flickr.css', $type = 'module', $media = 'all', $preprocess = TRUE);
-  }
-}
-
-/**
- * Implements hook_help().
- */
-function flickr_help($section, $arg) {
-  switch ($section) {
-    case 'admin/settings/flickr':
-      return t("You will need a Flickr API key to use this module. You can apply for one at <a href='@link'>@link</a>", array('@link' => url('http://www.flickr.com/services/api/keys/apply/')));
-
-    case 'admin/help#flickr':
-      return t("The flickr module uses XML-RPC to connect to Flickr's API and retreive photo information.");
   }
 }
 

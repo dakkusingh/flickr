@@ -9,21 +9,22 @@
  */
 
 /**
+ * Implements hook_help().
+ */
+function flickrfield_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#flickrfield':
+      // Return a line-break version of the README.txt.
+      return _filter_autop(file_get_contents(dirname(__FILE__) . '/README.txt'));
+  }
+}
+
+/**
  * Include css unconditionally.
  */
 function flickrfield_init() {
   if (variable_get('flickr_css', 1)) {
     drupal_add_css(drupal_get_path('module', 'flickr') . '/flickr.css');
-  }
-}
-
-/**
- * Implements hook_help().
- */
-function flickrfield_help($section, $arg) {
-  switch ($section) {
-    case 'admin/help#flickrfield':
-      return t('Flickrfields display Flickr photos or photosets. Input the user id of the photo owner and the photo or photoset id. The id is visible in the url when you view the photo or photoset on Flickr.');
   }
 }
 

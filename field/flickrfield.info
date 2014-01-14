@@ -1,5 +1,5 @@
 name = Flickr Field
-description = Flickr CCK field to insert Flickr images into content.
+description = A Flickr CCK field to add Flickr images or sets to content.
 dependencies[] = flickr
 dependencies[] = content
 package = Flickr
