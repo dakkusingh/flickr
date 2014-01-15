@@ -223,8 +223,21 @@ function theme_flickr_photo($photo, $size = NULL, $format = NULL, $attributes = 
   $img = flickr_img($photo, $size, $attributes);
   // URL of the image to display.
   $img_url = flickr_photo_img($photo, $size);
-  // Get the real width of the displayed image.
-  list($width) = getimagesize($img_url);
+  // If the image is a square we know the width (avoids to make a request).
+  switch ($size) {
+    case 's':
+      $width = '75';
+      break;
+
+    case 'q':
+      $width = '150';
+      break;
+  }
+  // If it is not a square.
+  if (!isset($width)) {
+    // Get the real width of the image.
+    list($width) = getimagesize($img_url);
+  }
   // URL of the photo page on Flickr.
   $photo_url = flickr_photo_page_url($photo['owner'], $photo['id']);
   // Get the Flickr image title for set data or the photo itself. Sanatize.
