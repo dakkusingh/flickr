@@ -1,6 +1,6 @@
 <?php
 
-define('FLICKR_REST_ENDPOINT', 'http://api.flickr.com/services/rest/');
+define('FLICKR_REST_ENDPOINT', 'https://api.flickr.com/services/rest/');
 require_once(drupal_get_path('module', 'flickr') . '/flickr.api.inc');
 
 /**
@@ -189,7 +189,7 @@ function flickr_photo_img($photo, $size = NULL, $format = NULL) {
   $id = isset($photo['primary']) ? $photo['primary'] : $photo['id'];
   $secret = $photo['secret'];
 
-  return "http://farm{$farm}.static.flickr.com/{$server}/{$id}_{$secret}" . ($size ? "_$size." : '.') . ($size == 'o' ? $format : 'jpg');
+  return "https://farm{$farm}.static.flickr.com/{$server}/{$id}_{$secret}" . ($size ? "_$size." : '.') . ($size == 'o' ? $format : 'jpg');
 }
 
 /**
@@ -266,7 +266,7 @@ function flickr_photo_page_url($owner, $id = NULL) {
     return $person['photosurl']['_content'] . $id;
   }
   else {
-    return "http://flickr.com/photos/$nsid/$id";
+    return "https://flickr.com/photos/$nsid/$id";
   }
 }
 
@@ -299,7 +299,7 @@ function flickr_get_info_by_url($url, $reset = FALSE) {
   }
   // Prepend the protocol if it's not there, so we can use parse_url().
   if (strpos($url, 'http') !== 0) {
-    $url = 'http://' . $url;
+    $url = 'https://' . $url;
   }
   $parts = parse_url($url);
   if (strpos($parts['host'], 'flickr') === FALSE) {
@@ -343,7 +343,7 @@ function flickr_photoset_page_url($owner, $id = NULL) {
     return $person['photosurl']['_content'] . 'sets/' . $id;
   }
   else {
-    return "http://flickr.com/photos/$nsid/sets/$id";
+    return "https://flickr.com/photos/$nsid/sets/$id";
   }
 }
 

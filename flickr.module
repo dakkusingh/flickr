@@ -246,7 +246,7 @@ function theme_flickr_photo($photo, $size = NULL, $format = NULL, $attributes = 
   // Use title if description does not exist, else sanitize the description.
   $description = !empty($info['description']['_content']) ? str_replace('"', "'", htmlspecialchars_decode(strip_tags($info['description']['_content']))) : $title;
   // Real name if it exists or go with the username. Link to Flickr user page.
-  $username = !empty($info['owner']['realname']) ? l($info['owner']['realname'], 'http://www.flickr.com/photos/' . $info['owner']['nsid'], array('attributes' => array('title' => t('View user on Flickr.'), 'target' => '_blank'))) : l($info['owner']['username'], 'http://www.flickr.com/photos/' . $info['owner']['nsid'], array('attributes' => array('title' => t('View user on Flickr.'), 'target' => '_blank')));
+  $username = !empty($info['owner']['realname']) ? l($info['owner']['realname'], 'https://www.flickr.com/photos/' . $info['owner']['nsid'], array('attributes' => array('title' => t('View user on Flickr.'), 'target' => '_blank'))) : l($info['owner']['username'], 'https://www.flickr.com/photos/' . $info['owner']['nsid'], array('attributes' => array('title' => t('View user on Flickr.'), 'target' => '_blank')));
   // The date an image was taken formatted as 'time ago'.
   $taken = isset($info['dates']['taken']) ? format_interval(time() - strtotime($info['dates']['taken']), 1) . ' ' . t('ago') : '';
   // A bunch of geo data.
