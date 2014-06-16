@@ -41,8 +41,7 @@ to be specified in the block configuration.
 BLOCK CONFIGURATION
 ===================
 
-There are a two Flickr specific fields in the block settings that apply on all
-blocks.
+Fields in the block settings that apply on all blocks.
 
 Show n photos
 -------------
@@ -62,7 +61,6 @@ user'.
 
 Media type
 ----------
-- all (default)
 - photos
 - videos
 Note that for videos only an image representing the video is showed.
