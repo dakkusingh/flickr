@@ -284,17 +284,11 @@ function flickr_img($photo, $size = NULL, $attributes = NULL) {
   // Photoset's use primary instead of id to specify the image.
   if (isset($photo['primary'])) {
     $id = $photo['primary'];
-    $attributes['class'] = implode(' ', array(
-      $attributes['class'],
-      'flickr-photoset-img',
-    ));
+    $attributes['class'] = explode(' ', trim($attributes['class'] . ' flickr-photoset-img'));
   }
   else {
     $id = $photo['id'];
-    $attributes['class'] = implode(' ', array(
-      $attributes['class'],
-      'flickr-photo-img',
-    ));
+    $attributes['class'] = explode(' ', trim($attributes['class'] . ' flickr-photo-img'));
   }
 
   $image_sizes = flickr_photos_getsizes($id);
