@@ -51,6 +51,16 @@ function flickr_uninstall() {
   variable_del('flickr_date_format_image_caption');
   variable_del('flickr_date_format_image_caption_hover');
   variable_del('flickr_date_format_album_title');
+  variable_del('flickr_capsize');
+  variable_del('flickr_sswidth_value');
+  variable_del('flickr_sswidth_unit');
+  variable_del('flickr_sswidth');
+  variable_del('flickr_sswratio');
+  variable_del('flickr_sshratio');
+  variable_del('flickr_ssratio');
+  variable_del('flickr_caption_fontsize');
+  variable_del('flickr_preview_html');
+  variable_del('flickr_preview_collapsed');
 }
 
 /**

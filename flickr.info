@@ -3,3 +3,5 @@ description = Flickr and Drupal integration.
 core = 7.x
 package = Flickr
 configure = admin/config/media/flickr
+
+soft_dependencies[] = style_settings

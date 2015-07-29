@@ -229,8 +229,8 @@ function theme_flickr_tags_cloud($variables) {
   $min_occur = min($tags);
 
   // Font size specified in em.
-  $max_font = 3.5;
-  $min_font = 0.7;
+  $max_font = variable_get('flickr_tags_maxfont', 3.5);
+  $min_font = variable_get('flickr_tags_minfont', 0.7);
 
   $output = "<ul id='flickr_tagcloud'>\n";
   foreach ($tags as $tagname => $occurences) {
