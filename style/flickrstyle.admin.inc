@@ -101,7 +101,7 @@ function flickrstyle_form_flickr_admin_settings_alter(&$form, &$form_state) {
       $form['css_settings']['css_variables']['flickrstyle_spacing'] = array(
         '#type' => 'style_settings_number',
         '#title' => t('Space between image and border'),
-        '#default_value' => floatval(variable_get('flickrstyle_spacing', 'px')),
+        '#default_value' => floatval(variable_get('flickrstyle_spacing', '2px')),
         '#field_suffix' => t('px'),
         '#weight' => 14,
       );
@@ -228,6 +228,12 @@ function flickrstyle_form_flickr_admin_settings_alter(&$form, &$form_state) {
         drupal_set_message(t("The emphasize style has been set to 'Zoom'. 'Enlarge' has been disabled until you set a 'border' or unselect 'shadow' in the 'Image styles'. It will be available again after saving the form."), 'warning', FALSE);
       }
     }
+    $retina = l(t('retina'), 'https://en.wikipedia.org/wiki/Retina_Display', array(
+        'attributes' => array(
+          'title' => t('Retina Display - Wikipedia, the free encyclopedia'),
+          'target' => '_blank',
+        ),
+    ));
     $form['css_settings']['flickrstyle_emphasize'] = array(
       '#type' => 'radios',
       '#title' => t('Emphasize the image on hover?'),
@@ -240,7 +246,7 @@ function flickrstyle_form_flickr_admin_settings_alter(&$form, &$form_state) {
       ),
       // Defaults to 'Enlarge slightly'.
       '#default_value' => variable_get('flickrstyle_emphasize', 2),
-      '#description' => t("(*): The 'Zoom' and 'Enlarge' styles use bigger images to maintain the resolution. This has a slight performance impact and the size 'big square' (q) is not square but 150px on the longest side to avoid distortion on older browsers."),
+      '#description' => t("(*): The 'Zoom' and 'Enlarge' styles use bigger images to maintain the resolution. This has a slight performance impact and the size 'big square' (q) is not square but 150px on the longest side to avoid distortion on older browsers. Applying the 'enlarge' or 'zoom' style makes images look good on Hi-Res displays (!retina) while using the higher resolution images also on normal screens by enlarging them on mouseover (hover).", array('!retina' => $retina)),
       '#weight' => 12,
     );
     // Disable the 'Enlarge' style until a border is set or shadow unselected.
