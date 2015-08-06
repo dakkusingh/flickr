@@ -141,7 +141,7 @@ function flickr_simplytest_install() {
   $node = new stdClass();
   $node->uid = 1;
   $node->language = 'und';
-  $node->type = 'article';
+  $node->type = 'page';
   $node->status = 1;
   $node->promote = 1;
   $node->title = $t('Flickr-Colorbox integration in Drupal 7 & auto float images in text body alternately right and left.');
@@ -158,7 +158,7 @@ function flickr_simplytest_install() {
     array(),
     'expanded' => 0,
     'parent_depth_limit' => 8,
-    'link_title' => $t('Flickr sample page'),
+    'link_title' => $t('Example page with AutoFloat'),
     'description' => '',
     'parent' => 'main-menu:0',
     'weight' => '2',
@@ -171,35 +171,41 @@ function flickr_simplytest_install() {
   $node = new stdClass();
   $node->uid = 1;
   $node->language = 'und';
-  $node->type = 'article';
+  $node->type = 'page';
   $node->status = 1;
   $node->promote = 0;
-  $node->title = $t('More album samples.');
-  $node->body['und'][0]['value'] = $t('<p style="clear: left;">&#91;flickr-gallery:id=72157647277042064, size=m, num=3, sort=random]
-results in:</p>
-[flickr-gallery:id=72157647277042064, size=m, num=3, sort=random]<br />
-&#91;flickr-group:id=91484156@N00, size=q, num=4, tags=flowers, filter=interesting, sort=views]
+  $node->title = $t('Album examples.');
+  $node->body['und'][0]['value'] = $t('<strong>&#91;flickr-gallery:id=72157648989290536, size=m, num=3, sort=random]</strong>
+results in:
+
+[flickr-gallery:id=72157648989290536, size=m, num=3, sort=random]<br />
+<hr />
+<strong>&#91;flickr-group:id=91484156@N00, size=q, num=4, tags=flowers, filter=interesting, sort=views]</strong>
 results in:
 
 [flickr-group:id=91484156@N00, size=q, num=4, tags=flowers, filter=interesting, sort=views]<br />
-&#91;flickr-user:id=public, size=t, num=7,tags=Augusto Canario, filter=interesting, sort=views, extend=true]
+<hr />
+<strong>&#91;flickr-user:id=public, size=t, num=5, tags=Augusto Canario, filter=interesting, sort=views, extend=true]</strong>
 results in:
 
-[flickr-user:id=public, size=t, num=7,tags=Augusto Canario, filter=interesting, sort=views, extend=true]<br />
+[flickr-user:id=public, size=t, num=5, tags=Augusto Canario, filter=interesting, sort=views, extend=true]<br />
 <strong>Note: tags can be used also dynamically in a block that takes it from the taxonomy terms of the node it is displayed in (context sensitive).</strong>
 <br /><br />
-&#91;flickr-user:id=public, size=q, num=4, tags=tower, location=48.85837/2.294481/0.2, filter=interesting, sort=views]
+<hr />
+<strong>&#91;flickr-user:id=public, size=q, num=4, tags=tower, location=48.85837/2.294481/0.2, filter=interesting, sort=views]</strong>
 results in:
 
 [flickr-user:id=public, size=q, num=4, tags=tower, location=48.85837/2.294481/0.2, filter=interesting, sort=views]<br />
-&#91;flickr-favorites:id=lolandese, size=q, num=4, tags=tomosborn/people]
+<hr />
+<strong>&#91;flickr-favorites:id=lolandese, size=q, num=4, tags=tomosborn/people]</strong>
 results in:
 
 [flickr-favorites:id=lolandese, size=q, num=4, tags=tomosborn/people]<br />
-&#91;flickr-user:id=public, size=q, num=6,location=48.867556/2.364088, date=2015-01-11, filter=interesting, sort=views]
+<hr />
+<strong>&#91;flickr-user:id=public, size=q, num=4, location=48.867556/2.364088, date=2015-01-11, filter=interesting, sort=views]</strong>
 results in:
 
-[flickr-user:id=public, size=q, num=6,location=48.867556/2.364088, date=2015-01-11, filter=interesting, sort=views]<!--break-->');
+[flickr-user:id=public, size=q, num=4, location=48.867556/2.364088, date=2015-01-11, filter=interesting, sort=views]<!--break-->');
   $node->body['und'][0]['format'] = 'full_html';
   $node->menu = array(
     'enabled' => 1,
@@ -211,7 +217,7 @@ results in:
     'options' => array(),
     'expanded' => 0,
     'parent_depth_limit' => 8,
-    'link_title' => $t('More samples'),
+    'link_title' => $t('Album examples'),
     'description' => '',
     'parent' => 'main-menu:0',
     'weight' => '3',
