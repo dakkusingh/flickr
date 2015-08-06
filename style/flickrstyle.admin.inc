@@ -35,7 +35,7 @@ function flickrstyle_form_flickr_admin_settings_alter(&$form, &$form_state) {
     ));
     if (module_exists('style_settings')) {
       $form['css_settings']['css_variables']['flickrstyle_radius'] = array(
-        '#type' => 'fieldset', 
+        '#type' => 'fieldset',
         '#title' => t('Rounded corner radius'),
         // Make containing fields align horizontally.
         '#attributes' => array('class' => array('container-inline')),
@@ -152,7 +152,7 @@ function flickrstyle_form_flickr_admin_settings_alter(&$form, &$form_state) {
         '#size' => 40,
         '#upload_location' => 'public://flickr/style/',
         '#theme' => 'image_widget',
-      ); 
+      );
       if (!variable_get('flickrstyle_magnifier_imgupload', '')) {
         variable_set('flickrstyle_magnifier_imgupload_url', '');
       }
@@ -162,8 +162,8 @@ function flickrstyle_form_flickr_admin_settings_alter(&$form, &$form_state) {
       $form['css_settings']['css_variables']['flickrstyle_magnifier']['flickrstyle_magnifier_imgfield']['flickrstyle_magnifier_image'] = array(
         '#type' => 'style_settings_imgurl',
         '#default_value' => $default,
-        // In the submit handler below we reset an empty field to the default URL.
-        // This way the user isn't required to know the URL of the default image.
+        // In submit handler below we reset an empty field to default URL.
+        // This way the user isn't required to know URL of the default image.
       );
       $form['css_settings']['css_variables']['flickrstyle_magnifier']['flickrstyle_magnifier_opacity'] = array(
         '#type' => 'style_settings_slider',
@@ -269,7 +269,7 @@ function flickrstyle_admin_settings_submit($form, &$form_state) {
     // Rounded corners: concatenate the value and unit.
     variable_set('flickrstyle_radius', $form_state['values']['flickrstyle_radius_value'] . $form_state['values']['flickrstyle_radius_unit']);
 
-    //IMAGE UPLOAD.
+    // IMAGE UPLOAD.
     if (!empty($form_state['values']['flickrstyle_magnifier_imgupload'])) {
       $image = file_load($form_state['values']['flickrstyle_magnifier_imgupload']);
       $url = '/' . variable_get('file_public_path', conf_path() . '/files') . '/' . file_uri_target($image->uri);

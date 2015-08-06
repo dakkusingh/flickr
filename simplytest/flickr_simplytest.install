@@ -71,7 +71,16 @@ function flickr_simplytest_install() {
       'cache' => -1,
     ),
   );
-  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
+  $query = db_insert('block')->fields(array(
+    'module',
+    'delta',
+    'theme',
+    'status',
+    'weight',
+    'region',
+    'pages',
+    'cache',
+  ));
   foreach ($blocks as $block) {
     $query->values($block);
   }
@@ -90,12 +99,12 @@ function flickr_simplytest_install() {
   variable_set('flickr_default_size', 'm');
   variable_set('flickr_default_userid', '98518260@N02');
   $data = array(
-  'user_id' => '',
-  'show_n' => '4',
-  'size' => 's',
-  'sort' => 'unsorted',
-  'filter' => NULL,
-  'media' => 'photos',
+    'user_id' => '',
+    'show_n' => '4',
+    'size' => 's',
+    'sort' => 'unsorted',
+    'filter' => NULL,
+    'media' => 'photos',
   );
   variable_set('flickr_block_5', $data);
 
@@ -126,7 +135,7 @@ function flickr_simplytest_install() {
   );
   menu_link_save($item);
 
-// Create sample pages.
+  // Create sample pages.
   $t = get_t();
 
   $node = new stdClass();
@@ -138,7 +147,7 @@ function flickr_simplytest_install() {
   $node->title = $t('Flickr-Colorbox integration in Drupal 7 & auto float images in text body alternately right and left.');
   $node->body['und'][0]['value'] = $t('<p>[flickr-photo:id=9247386562,size=m]DEMO PAGE of both the <a href="http://drupal.org/project/autofloat" title="Project page on Drupal.">AutoFloat</a> and <a href="http://drupal.org/project/flickr" title="Project page on Drupal.">Flickr</a> module from the distro at https://drupal.org/project/demo_flickr.<br>They work seamless together out-of-the-box. A huge time-saver.</p><p>Note that in this demo the Flickr and AutoFloat filters are active only on the <a href="/admin/config/content/formats/full_html"><em>Full HTML</em> text format.</a><br />You find admin quick links to the relevant settings in the <em>Navigation</em> menu in the sidebar.</p><p>After installation you might get this error:<br />&nbsp;&nbsp;<em>"Could not connect to Flickr, Error: Connection timed out"</em><br />Just <a href="/node/1/edit">re-save</a> the node.</p>Used:<ul><li><a href="http://drupal.org/" title="Drupal.org">Drupal</a> 7</li><li><a href="http://drupal.org/project/colorbox" title="Project page on Drupal">Colorbox</a></li><li><a href="http://drupal.org/project/autofloat" title="Project page on Drupal">AutoFloat</a></li><li><a href="http://drupal.org/project/flickr" title="Project page on Drupal">Flickr</a> 7.x-1.x-dev</li></ul>Activated Flickr sub-modules:<ul><li>Flickr Block</li><li>Flickr Filter</li><li>Flickr Sets</li><li>Flickr Style</li><li>Flickr Cachewarmer</li></ul>NOTHING MORE, NOTHING LESS.<br />No other customizations, modifications, alterations, additions, whatsoever.<p><span style="background-color:#ffff00;">ALSO THE CAPTION FLOATS AND DIVIDES OVER MORE ROWS IF NECESSARY.</span>. [flickr-photo:id=9247388074,size=q]Tincidunt nec velit adipiscing adipiscing ultrices, integer urna augue porta enim porttitor tortor velit! Urna, nunc sociis porttitor? Rhoncus adipiscing dictumst cum est et ridiculus odio risus nec sed et lorem elit, pulvinar facilisis nec aenean egestas cursus nisi, duis! Enim. Sed, amet dolor dictumst, in augue sociis mauris! Facilisis? Placerat pellentesque amet in in? Cras duis facilisis nec arcu porttitor parturient eu lectus aliquam rhoncus porta tristique, lectus elementum.</p><p>Tincidunt lectus parturient? Magna aliquet ultrices elit! Rhoncus, turpis. Sagittis facilisis mauris cras habitasse, aliquam, risus nunc tincidunt sit nunc pulvinar, nec lectus aenean magnis placerat ac. Tincidunt! Eu, in nunc duis, ac phasellus, amet ultricies amet, ultricies phasellus. [flickr-photo:id=9244604259,size=m]<br /><span style="background-color:#ffff00;">AN IMAGE CAN BE PUT ALSO HALFWAY A PARAGRAPH. THAT IS WHY SPANS ARE USED INSTEAD OF DIVS (<a href="http://stackoverflow.com/a/1611172" title="StackOverfow.com">more info</a>).</span> Et, auctor. Turpis augue in proin pulvinar turpis ac proin aliquam sit pulvinar risus, tristique? Ultricies vut massa nisi dolor, dignissim, enim proin et, rhoncus, a porttitor porttitor!</p><p><span style="background-color:#ffff00;">IMAGES IN A SET OF THUMBNAILS ARE EXCLUDED FROM AUTOFLOAT. TRY TO CLICK A LOCATION NAME OR THE VIDEO (last thumbnail, plays inside Colorbox).</span></p><p style="font-size: 250%;">&#11015;</p>[flickr-photoset:id=72157634563269642,size=q,media=all,num=20]<p>[flickr-photo:id=9247387656,size=s]<span style="background-color:#ffff00;">ON THE SMALLEST SIZE (square 75px) THE TITLE IS SUBSTITUTED WITH THE TERM "FLICKR" TO SAVE SPACE.</span> Auctor ac, urna odio lorem, duis integer nisi nisi, proin dictumst, elementum nisi! Sed. Magna facilisis elementum, sed auctor, montes, et et habitasse porta, amet! Aenean, scelerisque amet est, elit, nascetur porttitor elementum? Risus arcu, tristique platea rhoncus rhoncus lacus ultricies integer eros massa dignissim! Egestas dapibus auctor magna porttitor. Sociis? Velit nec, duis scelerisque dictumst turpis dolor sit.</p><p>[flickr-photo:id=9244503455,size=n]<span style="background-color:#ffff00;">IMAGE SIZE 320 PX ONLY AVAILABLE FOR FLICKR PHOTOS UPLOADED AFTER MARCH 1, 2012.</span> Sit adipiscing ac etiam cum, odio ridiculus pulvinar, a porta tristique, sit cras! Porttitor ridiculus nisi porta? Turpis nunc elit, in ultrices, nisi risus purus vel, amet. In et tincidunt rhoncus. Turpis tempor adipiscing a. Aenean cum lacus auctor nec! Egestas. Lacus sed magna elementum lacus augue. Montes magna ac et nisi rhoncus mauris, vel! Lorem dictumst ultricies lacus.</p><p><span style="background-color:#ffff00;">TRY TO RESIZE THE BROWSER WINDOW TO VERIFY HOW THE SLIDESHOW AND THE IMAGES IN THE SET AND BLOCK ADAPT TO THE AVAILABLE WIDTH.</span></p><p><span style="background-color:#ffff00;">A SLIDESHOW (SEE BELOW) OF A SET OR USER/GROUP PHOTOSTREAM CAN BE USED IN A BLOCK, THE NODE BODY OR FIELD. ALSO A NON-FLASH VERSION IS AVAILABLE. THEY BOTH SUPPORT FULL-SCREEN MODE AND ARE RESPONSIVE.</span></p><p><span style="background-color:#ffff00;">AT THE BOTTOM AN EXAMPLE OF A VIDEO.<br />THE WIDTH CAN BE CONTROLLED (in this case 80%). TRY BOTH FULL-SCREEN.</span></p>&nbsp;<br />[flickr-photoset:id=72157634563269642,size=x]<div style="width:80%;">[flickr-photoset:id=72157644096644712,size=y]</div><!--break-->');
   $node->body['und'][0]['format'] = 'full_html';
-  $node->menu = array (
+  $node->menu = array(
     'enabled' => 1,
     'mlid' => 0,
     'module' => 'menu',
@@ -146,8 +155,7 @@ function flickr_simplytest_install() {
     'has_children' => 0,
     'customized' => 0,
     'options' =>
-    array (
-    ),
+    array(),
     'expanded' => 0,
     'parent_depth_limit' => 8,
     'link_title' => $t('Flickr sample page'),
@@ -193,16 +201,14 @@ results in:
 
 [flickr-user:id=public, size=q, num=6,location=48.867556/2.364088, date=2015-01-11, filter=interesting, sort=views]<!--break-->');
   $node->body['und'][0]['format'] = 'full_html';
-  $node->menu = array (
+  $node->menu = array(
     'enabled' => 1,
     'mlid' => 0,
     'module' => 'menu',
     'hidden' => 0,
     'has_children' => 0,
     'customized' => 0,
-    'options' =>
-    array (
-    ),
+    'options' => array(),
     'expanded' => 0,
     'parent_depth_limit' => 8,
     'link_title' => $t('More samples'),

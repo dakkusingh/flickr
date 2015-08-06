@@ -12,93 +12,92 @@ function flickr_admin_settings() {
     'group' => CSS_DEFAULT,
     'every_page' => FALSE,
   ));
-    // A preview area.
-    $form['flickr_preview'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Preview'),
-      '#description' => '<p>' . t('Note: Save the form to see your changes.') . '</p>',
-      '#collapsible' => TRUE,
-      '#collapsed' => variable_get('flickr_preview_collapsed', TRUE),
-    );
-    // Form submit resulted in an uncollapsed preview. Set it back.
-    variable_set('flickr_preview_collapsed', TRUE);
+  // A preview area.
+  $form['flickr_preview'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Preview'),
+    '#description' => '<p>' . t('Note: Save the form to see your changes.') . '</p>',
+    '#collapsible' => TRUE,
+    '#collapsed' => variable_get('flickr_preview_collapsed', TRUE),
+  );
+  // Form submit resulted in an uncollapsed preview. Set it back.
+  variable_set('flickr_preview_collapsed', TRUE);
 
-    if (module_exists('flickr_filter')) {
-      $markup = variable_get('flickr_preview_html', array(
-        'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
-        'format'=> 'full_html',
-      ));
-      // Reset to the default preview template if it is found empty.
-      $trimmed = trim($markup['value']);
-      $markup = empty($trimmed) ? variable_set('flickr_preview_html', array(
-        'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
-        'format'=> 'full_html',
-      )) : $markup;
-      // Use the current user's default format if the stored one isn't available.
-      $format_id = filter_format_load($markup['format']) ? $markup['format'] : filter_default_format();
-      $form['flickr_preview']['flickr_preview_markup'] = array(
-        '#markup' => '<div class="flickr-preview">' . check_markup($markup['value'], $format_id, '', $cache = FALSE) . '</div>',
-      );
-      $form['flickr_preview']['flickr_preview_details'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Template'),
-        '#description' => t('Wrapped in <code>&lt;div class="flickr-preview"> .. &lt;/div></code>.'),
-        '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
-      );
-      $form['flickr_preview']['flickr_preview_details']['flickr_preview_html'] = array(
-        '#type' => 'text_format',
-        '#title' => t(''),
-        '#description' => t('Changes are visible after form submit. Empty the text area to reset to default.'),
-        '#default_value' => $markup['value'],
-        '#format' => $format_id,
-        '#access' => 'use text format ' . $format_id,
-      );
-    }
-    else {
+  if (module_exists('flickr_filter')) {
+    $markup = variable_get('flickr_preview_html', array(
+      'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
+      'format' => 'full_html',
+    ));
+    // Reset to the default preview template if it is found empty.
+    $trimmed = trim($markup['value']);
+    $markup = empty($trimmed) ? variable_set('flickr_preview_html', array(
+      'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
+      'format' => 'full_html',
+    )) : $markup;
+    // Use the current user's default format if the stored one isn't available.
+    $format_id = filter_format_load($markup['format']) ? $markup['format'] : filter_default_format();
+    $form['flickr_preview']['flickr_preview_markup'] = array(
+      '#markup' => '<div class="flickr-preview">' . check_markup($markup['value'], $format_id, '', $cache = FALSE) . '</div>',
+    );
+    $form['flickr_preview']['flickr_preview_details'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Template'),
+      '#description' => t('Wrapped in <code>&lt;div class="flickr-preview"> .. &lt;/div></code>.'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $form['flickr_preview']['flickr_preview_details']['flickr_preview_html'] = array(
+      '#type' => 'text_format',
+      '#description' => t('Changes are visible after form submit. Empty the text area to reset to default.'),
+      '#default_value' => $markup['value'],
+      '#format' => $format_id,
+      '#access' => 'use text format ' . $format_id,
+    );
+  }
+  else {
     $flickr_filter_module = l(t('Flickr Filter sub-module'), 'admin/modules', array(
-        'fragment' => 'edit-modules-flickr',
-        'attributes' => array(
-          'title' => t('admin/modules#edit-modules-flickr'),
-        ),
+      'fragment' => 'edit-modules-flickr',
+      'attributes' => array(
+        'title' => t('admin/modules#edit-modules-flickr'),
+      ),
     ));
     $form['flickr_preview']['flickr_note_preview'] = array(
       '#markup' => t("Enable the !flickr_filter_module to have an editable preview template available to see the effect of your settings changes instantly without closing the form.", array('!flickr_filter_module' => $flickr_filter_module)),
     );
     }
-  $form['credentials'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Flickr credentials'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#weight' => 2,
-  );
-  $apply = l(t('https://www.flickr.com/services/apps/create/apply'), 'https://www.flickr.com/services/apps/create/apply', array(
+    $form['credentials'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Flickr credentials'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#weight' => 2,
+    );
+    $apply = l(t('https://www.flickr.com/services/apps/create/apply'), 'https://www.flickr.com/services/apps/create/apply', array(
       'attributes' => array(
         'title' => t('Flickr Services'),
         'target' => '_blank',
       ),
-  ));
-  $form['credentials']['flickr_api_key'] = array(
-    '#type' => 'textfield',
-    '#title' => t('API Key'),
-    '#required' => TRUE,
-    '#default_value' => variable_get('flickr_api_key', ''),
-    '#description' => t("API Key from Flickr. Get an API Key at !apply.", array('!apply' => $apply)),
-  );
-  $form['credentials']['flickr_api_secret'] = array(
-    '#type' => 'textfield',
-    '#title' => t('API Shared Secret'),
-    '#required' => TRUE,
-    '#default_value' => variable_get('flickr_api_secret', ''),
-    '#description' => t("API key's secret from Flickr."),
-  );
-  $default = variable_get('flickr_default_userid', '');
-  if (!empty($default)) {
-    $info = flickr_people_getinfo($default);
-    $default = $info['username']['_content'];
-  }
-  $form['credentials']['flickr_default_userid'] = array(
+    ));
+    $form['credentials']['flickr_api_key'] = array(
+      '#type' => 'textfield',
+      '#title' => t('API Key'),
+      '#required' => TRUE,
+      '#default_value' => variable_get('flickr_api_key', ''),
+      '#description' => t("API Key from Flickr. Get an API Key at !apply.", array('!apply' => $apply)),
+    );
+    $form['credentials']['flickr_api_secret'] = array(
+      '#type' => 'textfield',
+      '#title' => t('API Shared Secret'),
+      '#required' => TRUE,
+      '#default_value' => variable_get('flickr_api_secret', ''),
+      '#description' => t("API key's secret from Flickr."),
+    );
+    $default = variable_get('flickr_default_userid', '');
+    if (!empty($default)) {
+      $info = flickr_people_getinfo($default);
+      $default = $info['username']['_content'];
+    }
+    $form['credentials']['flickr_default_userid'] = array(
     '#type' => 'textfield',
     '#title' => t('Default Flickr User ID'),
     '#default_value' => $default,
@@ -438,11 +437,11 @@ function flickr_admin_settings() {
   if (module_exists('style_settings')) {
     $form['css_settings']['css_variables']['#collapsed'] = TRUE;
     $form['css_settings']['css_variables']['flickr_capsize'] = array(
-      '#type' => 'fieldset', 
+      '#type' => 'fieldset',
       '#title' => t('Caption font-size'),
       '#description' => t('Relative to the font size for the normal text. A minimum font size setting of your browser might limit it. Test it on different browsers.'),
       // Make containing fields align horizontally.
-      '#attributes' => array('class' => array('container-inline')), 
+      '#attributes' => array('class' => array('container-inline')),
     );
     // Number field without a '#field_suffix'.
     $form['css_settings']['css_variables']['flickr_capsize']['flickr_capsize_value'] = array(
@@ -461,11 +460,11 @@ function flickr_admin_settings() {
       '#required' => TRUE,
     );
     $form['css_settings']['css_variables']['flickr_sswidth'] = array(
-      '#type' => 'fieldset', 
+      '#type' => 'fieldset',
       '#title' => t('Slideshow width'),
       '#description' => t('Relative to width of the containing block element (%) or fixed (px). Never wider than the containing block (max-width: 100 %).'),
       // Make containing fields align horizontally.
-      '#attributes' => array('class' => array('container-inline')), 
+      '#attributes' => array('class' => array('container-inline')),
     );
     // Number field without a '#field_suffix'.
     $form['css_settings']['css_variables']['flickr_sswidth']['flickr_sswidth_value'] = array(
@@ -483,10 +482,10 @@ function flickr_admin_settings() {
       '#required' => TRUE,
     );
     $form['css_settings']['css_variables']['flickr_ssratio'] = array(
-      '#type' => 'fieldset', 
+      '#type' => 'fieldset',
       '#title' => t('Slideshow width:height ratio'),
       // Make containing fields align horizontally.
-      '#attributes' => array('class' => array('container-inline')), 
+      '#attributes' => array('class' => array('container-inline')),
     );
     // Number field without a '#field_suffix'.
     $form['css_settings']['css_variables']['flickr_ssratio']['flickr_sswratio'] = array(
@@ -771,12 +770,12 @@ function flickr_admin_settings_submit($form, &$form_state) {
       }
     }
   }
-    // Reset to the default preview template if it is found empty.
-    $trimmed = trim($form_state['values']['flickr_preview_html']['value']);
-    $form_state['values']['flickr_preview_html'] = empty($trimmed) ? variable_set('flickr_preview_html', array(
-      'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
-      'format'=> 'full_html',
-    )) : $form_state['values']['flickr_preview_html'];
+  // Reset to the default preview template if it is found empty.
+  $trimmed = trim($form_state['values']['flickr_preview_html']['value']);
+  $form_state['values']['flickr_preview_html'] = empty($trimmed) ? variable_set('flickr_preview_html', array(
+    'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
+    'format' => 'full_html',
+  )) : $form_state['values']['flickr_preview_html'];
   // Optionally make changes visible after form submit.
   if ($form_state['values']['flickr_cc']) {
     drupal_flush_all_caches();

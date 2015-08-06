@@ -324,9 +324,9 @@ function flickr_form_user_profile_form_alter(&$form, &$form_state) {
       // Only works for the default created Flickr field during install.
       // To make them work on other fields copy the code for an existing field
       // and substitute the field's machine name.
-    $form['flickr']['field_flickr_tags'] = $form['field_flickr_tags'];
+      $form['flickr']['field_flickr_tags'] = $form['field_flickr_tags'];
       unset($form['field_flickr_tags']);
-  }
+    }
   }
 }
 
@@ -735,7 +735,8 @@ function theme_flickr_photo($variables) {
   $description = (gettype($overlay['description']) == 'integer' || $overlaytitle == $description . ' - ') ? '' : $description . ' - ';
   $licenselong = (gettype($overlay['license']) == 'integer') ? '' : $licenselong;
   $overlayhtml = $overlaytitle . $metadata . $description . $licenselong;
-  // Optionally use the GPL licensed magnifier image supplied with the module or user specified.
+  // Optionally use the GPL licensed magnifier image supplied with the module or
+  // user specified.
   if (module_exists('flickrstyle')) {
     $uri = module_exists('style_settings') ? variable_get('flickrstyle_magnifier_image', '') : '';
     $magnifierurl = empty($uri) ? '/' . drupal_get_path('module', 'flickr') . '/style/img/magnifier.png' : $uri;
@@ -905,7 +906,8 @@ function theme_flickr_photoset($variables) {
     $title = is_array($photoset['title']) ? $photoset['title']['_content'] : $photoset['title'];
     return l($img, $photo_url, array(
       'attributes' => array(
-        'title' => $title),
+        'title' => $title
+      ),
       'absolute' => TRUE,
       'html' => TRUE,
       ));
@@ -929,14 +931,14 @@ function theme_flickr_flickrcomslideshow($variables) {
   if (isset($attribs[0]['width'])) {
     if (strpos($attribs[0]['width'], '%') !== FALSE) {
       $width = $attribs[0]['width'];
-      $div = '<div style="width: ' . (int)$width . '%;">';
+      $div = '<div style="width: ' . (int) $width . '%;">';
       $width = '100%';
       $height = '100%';
     }
     else {
       $width = $attribs[0]['width'];
       $height = isset($attribs[0]['height']) ? $attribs[0]['height'] : round($width * variable_get('flickr_sshratio', 3) / variable_get('flickr_sswratio', 4)) . 'px';
-      $div = '<div style="width: ' . (int)$width . 'px; height: ' . (int)$height . 'px;">';
+      $div = '<div style="width: ' . (int) $width . 'px; height: ' . (int) $height . 'px;">';
     }
     $divend = '</div>';
   }
@@ -994,14 +996,14 @@ function theme_flickr_flickrcomslideshow_simple($variables) {
   if (isset($attribs[0]['width'])) {
     if (strpos($attribs[0]['width'], '%') !== FALSE) {
       $width = $attribs[0]['width'];
-      $div = '<div style="width: ' . (int)$width . '%;">';
+      $div = '<div style="width: ' . (int) $width . '%;">';
       $width = '100%';
       $height = '100%';
     }
     else {
       $width = $attribs[0]['width'];
       $height = isset($attribs[0]['height']) ? $attribs[0]['height'] : round($width * variable_get('flickr_sshratio', 3) / variable_get('flickr_sswratio', 4)) . 'px';
-      $div = '<div style="width: ' . (int)$width . 'px; height: ' . (int)$height . 'px;">';
+      $div = '<div style="width: ' . (int) $width . 'px; height: ' . (int) $height . 'px;">';
     }
     $divend = '</div>';
   }
