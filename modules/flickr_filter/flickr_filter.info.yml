@@ -1,0 +1,7 @@
+name: Flickr Integration Filter
+type: module
+description: 'Flickr Integration Filter module provides configurable filter to display Flickr images.'
+package: Flickr
+core: 8.x
+dependencies:
+  - flickr
