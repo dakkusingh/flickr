@@ -6,7 +6,7 @@ use Drupal\filter\Plugin\FilterBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Provides a filter to insert 500px photo.
+ * Provides a filter to insert Flickr photo.
  *
  * @Filter(
  *   id = "flickr_filter",
