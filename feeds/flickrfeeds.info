@@ -1,7 +1,0 @@
-name = Feeds: Flickr parser
-description = Adds a JSON Flickr feed processor to the Feeds module
-dependencies[] = feeds
-dependencies[] = date
-package = Flickr
-version = VERSION
-core = 7.x
