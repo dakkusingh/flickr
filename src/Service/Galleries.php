@@ -1,12 +1,6 @@
 <?php
-/**
- * @file
- * Contains Drupal\flickr\Galleries.
- */
 
 namespace Drupal\flickr\Service;
-
-use Drupal\flickr\Service\Client;
 
 /**
  * Service class for Flickr Galleries.
@@ -22,7 +16,7 @@ class Galleries {
    * Constructor for the Flickr Galleries class.
    */
   public function __construct(Client $client) {
-    // Flickr Client
+    // Flickr Client.
     $this->client = $client;
   }
 
@@ -32,11 +26,11 @@ class Galleries {
    * @param string $id
    *   NSID of the gallery whose photos you want.
    *
-   * @return array $response
+   * @return array
    *   Response from the flickr method flickr.gallery.getInfo.
    *   (https://www.flickr.com/services/api/flickr.gallery.getInfo.html)
    */
-  function galleriesGetInfo($id, $other_args = []) {
+  public function galleriesGetInfo($id, $other_args = []) {
     $args = ['gallery_id' => $id];
     array_merge($args, $other_args);
 
@@ -59,11 +53,11 @@ class Galleries {
    * @param string $id
    *   ID of the gallery.
    *
-   * @return array $response
+   * @return array
    *   Response from the flickr method flickr.galleries.getPhotos.
    *   (https://www.flickr.com/services/api/flickr.galleries.getPhotos.html)
    */
-  function galleriesGetPhotos($id, $page = 1, $other_args = []) {
+  public function galleriesGetPhotos($id, $page = 1, $other_args = []) {
     $args = [
       'gallery_id' => $id,
       'page' => $page,
@@ -98,7 +92,7 @@ class Galleries {
    *   Response from the flickr method flickr.galleries.getList.
    *   (https://www.flickr.com/services/api/flickr.galleries.getList.html)
    */
-  function galleriesGetList($nsid, $page = 1) {
+  public function galleriesGetList($nsid, $page = 1) {
     $args = [
       'user_id' => $nsid,
       'page' => $page,

@@ -1,12 +1,6 @@
 <?php
-/**
- * @file
- * Contains Drupal\flickr\Tags.
- */
 
 namespace Drupal\flickr\Service;
-
-use Drupal\flickr\Service\Client;
 
 /**
  * Service class for Flickr Tags.
@@ -22,7 +16,7 @@ class Tags {
    * Constructor for the Flickr Tags class.
    */
   public function __construct(Client $client) {
-    // Flickr Client
+    // Flickr Client.
     $this->client = $client;
   }
 

@@ -1,12 +1,6 @@
 <?php
-/**
- * @file
- * Contains Drupal\flickr\Photos.
- */
 
 namespace Drupal\flickr\Service;
-
-use Drupal\flickr\Service\Client;
 
 /**
  * Service class for Flickr Photos.
@@ -22,7 +16,7 @@ class Photos {
    * Constructor for the Flickr Photos class.
    */
   public function __construct(Client $client) {
-    // Flickr Client
+    // Flickr Client.
     $this->client = $client;
   }
 
@@ -84,7 +78,7 @@ class Photos {
    *   Response from the flickr method flickr.photos.search.
    *   (https://www.flickr.com/services/api/flickr.photos.search.html)
    */
-  function photosSearch($nsid, $page = 1, $other_args = array()) {
+  public function photosSearch($nsid, $page = 1, $other_args = []) {
 
     $args = [
       'page' => $page,

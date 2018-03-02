@@ -1,12 +1,6 @@
 <?php
-/**
- * @file
- * Contains Drupal\flickr\Photosets.
- */
 
 namespace Drupal\flickr\Service;
-
-use Drupal\flickr\Service\Client;
 
 /**
  * Service class for Flickr Photosets.
@@ -22,7 +16,7 @@ class Photosets {
    * Constructor for the Flickr Photosets class.
    */
   public function __construct(Client $client) {
-    // Flickr Client
+    // Flickr Client.
     $this->client = $client;
   }
 

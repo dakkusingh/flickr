@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains Drupal\flickr\Client.
- */
 
 namespace Drupal\flickr\Service;
 
@@ -32,11 +28,10 @@ class Client {
     $this->api_secret = $this->config->get('api_secret');
 
     $this->client = new GuzzleClient([
-      'base_uri' => $this->api_uri
+      'base_uri' => $this->api_uri,
     ]);
 
   }
-
 
   /**
    * @param $method
@@ -57,7 +52,6 @@ class Client {
 
     $response = $this->doRequest('', $args);
     // TODO Implement Drupal 8 cache.
-
     if ($response) {
       return $response;
     }
