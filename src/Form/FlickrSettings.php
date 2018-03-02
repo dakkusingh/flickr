@@ -74,17 +74,17 @@ class FlickrSettings extends ConfigFormBase {
       '#description' => t('The following settings connect Flickr module with external APIs.'),
     ];
 
-//    $form['flickr']['host_uri'] = [
-//      '#type' => 'textfield',
-//      '#title' => t('Flickr Host'),
-//      '#default_value' => $config->get('host_uri'),
-//    ];
-//
-//    $form['flickr']['api_uri'] = [
-//      '#type' => 'textfield',
-//      '#title' => t('Flickr API'),
-//      '#default_value' => $config->get('api_uri'),
-//    ];
+    $form['flickr']['host_uri'] = [
+      '#type' => 'textfield',
+      '#title' => t('Flickr URL'),
+      '#default_value' => $config->get('host_uri'),
+    ];
+
+    $form['flickr']['api_uri'] = [
+      '#type' => 'textfield',
+      '#title' => t('Flickr API URL'),
+      '#default_value' => $config->get('api_uri'),
+    ];
 
     return parent::buildForm($form, $form_state);
   }
@@ -96,8 +96,8 @@ class FlickrSettings extends ConfigFormBase {
     $this->config('flickr.settings')
       ->set('flickr_api_key', $form_state->getValue('flickr_api_key'))
       ->set('flickr_api_secret', $form_state->getValue('flickr_api_secret'))
-//      ->set('host_uri', $form_state->getValue('host_uri'))
-//      ->set('api_uri', $form_state->getValue('api_uri'))
+      ->set('host_uri', $form_state->getValue('host_uri'))
+      ->set('api_uri', $form_state->getValue('api_uri'))
       ->save();
 
     parent::submitForm($form, $form_state);
