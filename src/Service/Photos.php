@@ -19,7 +19,7 @@ class Photos {
   protected $client;
 
   /**
-   * Constructor for the 500px Photos class.
+   * Constructor for the Flickr Photos class.
    */
   public function __construct(Client $client) {
     // Flickr Client
