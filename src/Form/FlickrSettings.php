@@ -56,16 +56,16 @@ class FlickrSettings extends ConfigFormBase {
       ),
     ];
 
-    $form['credentials']['flickr_api_key'] = [
+    $form['credentials']['api_key'] = [
       '#type' => 'textfield',
       '#title' => t('API Key'),
-      '#default_value' => $config->get('flickr_api_key'),
+      '#default_value' => $config->get('api_key'),
     ];
 
-    $form['credentials']['flickr_api_secret'] = [
+    $form['credentials']['api_secret'] = [
       '#type' => 'textfield',
       '#title' => t('API key secret'),
-      '#default_value' => $config->get('flickr_api_secret'),
+      '#default_value' => $config->get('api_secret'),
     ];
 
     $form['flickr'] = [
@@ -85,7 +85,7 @@ class FlickrSettings extends ConfigFormBase {
       '#title' => t('Flickr API URL'),
       '#default_value' => $config->get('api_uri'),
     ];
-
+    
     return parent::buildForm($form, $form_state);
   }
 
@@ -94,8 +94,8 @@ class FlickrSettings extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('flickr.settings')
-      ->set('flickr_api_key', $form_state->getValue('flickr_api_key'))
-      ->set('flickr_api_secret', $form_state->getValue('flickr_api_secret'))
+      ->set('api_key', $form_state->getValue('api_key'))
+      ->set('api_secret', $form_state->getValue('api_secret'))
       ->set('host_uri', $form_state->getValue('host_uri'))
       ->set('api_uri', $form_state->getValue('api_uri'))
       ->save();
