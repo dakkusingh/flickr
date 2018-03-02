@@ -6,7 +6,7 @@
 
 namespace Drupal\flickr\Service;
 
-use Drupal\flickr\Service\FlickrClient;
+use Drupal\flickr\Service\Client;
 
 /**
  * Service class for Flickr Photos.
@@ -14,14 +14,14 @@ use Drupal\flickr\Service\FlickrClient;
 class Photos {
 
   /**
-   * @var \Drupal\flickr\Service\FlickrClient
+   * @var \Drupal\flickr\Service\Client
    */
   protected $client;
 
   /**
    * Constructor for the 500px Photos class.
    */
-  public function __construct(FlickrClient $client) {
+  public function __construct(Client $client) {
     // Flickr Client
     $this->client = $client;
   }
@@ -36,8 +36,8 @@ class Photos {
    *   Response from the flickr method flickr.photos.getInfo..
    *   (https://www.flickr.com/services/api/flickr.photos.getInfo.html)
    */
-  public function flickrPhotosGetInfo($photo_id) {
-    $response = $this->client->flickrRequest(
+  public function photosGetInfo($photo_id) {
+    $response = $this->client->request(
       'flickr.photos.getInfo',
       ['photo_id' => $photo_id]
     );
@@ -59,8 +59,8 @@ class Photos {
    *   Response from the flickr method flickr.photos.getSizes..
    *   (https://www.flickr.com/services/api/flickr.photos.getSizes.html)
    */
-  public function flickrPhotosGetSizes($photo_id) {
-    $response = $this->client->flickrRequest(
+  public function photosGetSizes($photo_id) {
+    $response = $this->client->request(
       'flickr.photos.getSizes',
       ['photo_id' => $photo_id]
     );
@@ -84,7 +84,7 @@ class Photos {
    *   Response from the flickr method flickr.photos.search.
    *   (https://www.flickr.com/services/api/flickr.photos.search.html)
    */
-  function flickrPhotosSearch($nsid, $page = 1, $other_args = array()) {
+  function photosSearch($nsid, $page = 1, $other_args = array()) {
 
     $args = [
       'page' => $page,
@@ -99,7 +99,7 @@ class Photos {
       $args['per_page'] = 6;
     }
 
-    $response = $this->client->flickrRequest(
+    $response = $this->client->request(
       'flickr.photos.search',
       $args
     );

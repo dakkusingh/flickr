@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains Drupal\flickr\FlickrClient.
+ * Contains Drupal\flickr\Client.
  */
 
 namespace Drupal\flickr\Service;
@@ -10,9 +10,9 @@ use Drupal\Core\Config\ConfigFactory;
 use GuzzleHttp\Client;
 
 /**
- * Service class for FlickrClient.
+ * Service class for Client.
  */
-class FlickrClient {
+class Client {
 
   /**
    * @var \Drupal\Core\Config\Config
@@ -20,7 +20,7 @@ class FlickrClient {
   protected $config;
 
   /**
-   * Constructor for the FlickrClient class.
+   * Constructor for the Client class.
    */
   public function __construct(ConfigFactory $config) {
     // Get the config.
@@ -45,17 +45,17 @@ class FlickrClient {
    *
    * @return bool|mixed
    */
-  public function flickrRequest($method, $args, $cacheable = TRUE) {
+  public function request($method, $args, $cacheable = TRUE) {
     // Build the arg_hash.
-    $args = $this->flickrBuildArgs($args, $method);
-    $arg_hash = $this->flickrBuildArgHash($args);
+    $args = $this->buildArgs($args, $method);
+    $arg_hash = $this->buildArgHash($args);
 
     // If we've got a secret, sign the arguments.
     if ($secret = $this->api_secret) {
       $args['api_sig'] = md5($secret . $arg_hash);
     }
 
-    $response = $this->flickrDoRequest('', $args);
+    $response = $this->doRequest('', $args);
     // TODO Implement Drupal 8 cache.
 
     return $response;
@@ -68,7 +68,7 @@ class FlickrClient {
    *
    * @return mixed
    */
-  private function flickrBuildArgs($args, $method, $format = 'json') {
+  private function buildArgs($args, $method, $format = 'json') {
     // Add in additional parameters then sort them for signing.
     $args['api_key'] = $this->api_key;
     $args['method'] = $method;
@@ -84,7 +84,7 @@ class FlickrClient {
    *
    * @return string
    */
-  private function flickrBuildArgHash($args) {
+  private function buildArgHash($args) {
     // Build an argument hash API signing (we'll also use it for the cache id).
     $arg_hash = '';
 
@@ -102,7 +102,7 @@ class FlickrClient {
    *
    * @return bool|mixed
    */
-  public function flickrDoRequest($url, $parameters = [], $requestMethod = 'GET') {
+  private function doRequest($url, $parameters = [], $requestMethod = 'GET') {
     $response = $this->client->request($requestMethod, $url, ['query' => $parameters]);
 
     // TODO Error checking can be improved.

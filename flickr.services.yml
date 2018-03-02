@@ -1,7 +1,25 @@
 services:
   flickr.flickr_client:
-    class: Drupal\flickr\Service\FlickrClient
+    class: Drupal\flickr\Service\Client
     arguments: ["@config.factory"]
-  flickr.flickr_photos:
+  flickr.photos:
     class: Drupal\flickr\Service\Photos
     arguments: ["@flickr.flickr_client"]
+#  flickr.favorites:
+#    class: Drupal\flickr\Service\Favorites
+#    arguments: ["@flickr.flickr_client"]
+#  flickr.galleries:
+#    class: Drupal\flickr\Service\Galleries
+#    arguments: ["@flickr.flickr_client"]
+#  flickr.groups:
+#    class: Drupal\flickr\Service\Groups
+#    arguments: ["@flickr.flickr_client"]
+#  flickr.people:
+#    class: Drupal\flickr\Service\People
+#    arguments: ["@flickr.flickr_client"]
+#  flickr.photosets:
+#    class: Drupal\flickr\Service\Photosets
+#    arguments: ["@flickr.flickr_client"]
+#  flickr.tags:
+#    class: Drupal\flickr\Service\Tags
+#    arguments: ["@flickr.flickr_client"]
