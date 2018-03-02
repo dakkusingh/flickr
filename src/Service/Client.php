@@ -58,7 +58,11 @@ class Client {
     $response = $this->doRequest('', $args);
     // TODO Implement Drupal 8 cache.
 
-    return $response;
+    if ($response) {
+      return $response;
+    }
+
+    return FALSE;
   }
 
   /**
