@@ -37,10 +37,9 @@ class Photos {
    *   (https://www.flickr.com/services/api/flickr.photos.getInfo.html)
    */
   public function flickrPhotosGetInfo($photo_id) {
-    $args = ['photo_id' => $photo_id];
     $response = $this->client->flickrRequest(
       'flickr.photos.getInfo',
-      $args
+      ['photo_id' => $photo_id]
     );
 
     if ($response) {
@@ -50,4 +49,26 @@ class Photos {
     return FALSE;
   }
 
+  /**
+   * Returns the available sizes for a photo.
+   *
+   * @param string $photo_id
+   *   ID of the photo to get the available sizes of.
+   *
+   * @return array
+   *   Response from the flickr method flickr.photos.getSizes..
+   *   (https://www.flickr.com/services/api/flickr.photos.getSizes.html)
+   */
+  public function flickrPhotosGetSizes($photo_id) {
+    $response = $this->client->flickrRequest(
+      'flickr.photos.getSizes',
+      ['photo_id' => $photo_id]
+    );
+
+    if ($response) {
+      return $response['sizes']['size'];
+    }
+
+    return FALSE;
+  }
 }
