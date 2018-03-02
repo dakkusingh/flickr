@@ -71,4 +71,44 @@ class Photos {
 
     return FALSE;
   }
+
+  /**
+   * Return a list of photos matching some criteria.
+   *
+   * @param string $nsid
+   *   NSID of the user whose photoset tags will be returned.
+   * @param string $page
+   *   Page of results to return.
+   *
+   * @return array
+   *   Response from the flickr method flickr.photos.search.
+   *   (https://www.flickr.com/services/api/flickr.photos.search.html)
+   */
+  function flickrPhotosSearch($nsid, $page = 1, $other_args = array()) {
+
+    $args = [
+      'page' => $page,
+      'user_id' => $nsid,
+    ];
+
+    array_merge($args, $other_args);
+
+    // Set per_page to flickr module default if not specified in $args.
+    if (!isset($args['per_page'])) {
+      // TODO Expose pager as a setting.
+      $args['per_page'] = 6;
+    }
+
+    $response = $this->client->flickrRequest(
+      'flickr.photos.search',
+      $args
+    );
+
+    if ($response) {
+      return $response['photos'];
+    }
+
+    return FALSE;
+  }
+
 }
