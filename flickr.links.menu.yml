@@ -1,0 +1,5 @@
+flickr.settings:
+  title: 'Flickr Integration Settings'
+  description: 'Configure the Flickr integration.'
+  route_name: flickr.settings
+  parent: system.admin_config_media
