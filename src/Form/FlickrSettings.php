@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\flickr\Form\FlickrSettings.
- */
-
 namespace Drupal\flickr\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
@@ -43,49 +38,49 @@ class FlickrSettings extends ConfigFormBase {
 
     $form['credentials'] = [
       '#type' => 'fieldset',
-      '#title' => t('OAuth Settings'),
+      '#title' => $this->t('OAuth Settings'),
     ];
 
     $form['credentials']['help'] = [
       '#type' => '#markup',
-      '#markup' => t('API Key from Flickr. Get an API Key at @link.',
+      '#markup' => $this->t('API Key from Flickr. Get an API Key at @link.',
         [
           '@link' => Link::fromTextAndUrl('https://www.flickr.com/services/apps/create/apply',
-          Url::fromUri('https://www.flickr.com/services/apps/create/apply'))->toString()
+          Url::fromUri('https://www.flickr.com/services/apps/create/apply'))->toString(),
         ]
       ),
     ];
 
     $form['credentials']['api_key'] = [
       '#type' => 'textfield',
-      '#title' => t('API Key'),
+      '#title' => $this->t('API Key'),
       '#default_value' => $config->get('api_key'),
     ];
 
     $form['credentials']['api_secret'] = [
       '#type' => 'textfield',
-      '#title' => t('API key secret'),
+      '#title' => $this->t('API key secret'),
       '#default_value' => $config->get('api_secret'),
     ];
 
     $form['flickr'] = [
       '#type' => 'fieldset',
-      '#title' => t('Flickr Settings'),
-      '#description' => t('The following settings connect Flickr module with external APIs.'),
+      '#title' => $this->t('Flickr Settings'),
+      '#description' => $this->t('The following settings connect Flickr module with external APIs.'),
     ];
 
     $form['flickr']['host_uri'] = [
       '#type' => 'textfield',
-      '#title' => t('Flickr URL'),
+      '#title' => $this->t('Flickr URL'),
       '#default_value' => $config->get('host_uri'),
     ];
 
     $form['flickr']['api_uri'] = [
       '#type' => 'textfield',
-      '#title' => t('Flickr API URL'),
+      '#title' => $this->t('Flickr API URL'),
       '#default_value' => $config->get('api_uri'),
     ];
-    
+
     return parent::buildForm($form, $form_state);
   }
 
