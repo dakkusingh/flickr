@@ -7,7 +7,7 @@
 namespace Drupal\flickr\Service;
 
 use Drupal\Core\Config\ConfigFactory;
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 
 /**
  * Service class for Client.
@@ -31,7 +31,7 @@ class Client {
     $this->api_key = $this->config->get('api_key');
     $this->api_secret = $this->config->get('api_secret');
 
-    $this->client = new Client([
+    $this->client = new GuzzleClient([
       'base_uri' => $this->api_uri
     ]);
 
