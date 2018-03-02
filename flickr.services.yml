@@ -2,3 +2,6 @@ services:
   flickr.flickr_client:
     class: Drupal\flickr\Service\FlickrClient
     arguments: ["@config.factory"]
+  flickr.flickr_photos:
+    class: Drupal\flickr\Service\Photos
+    arguments: ["@flickr.flickr_client"]
