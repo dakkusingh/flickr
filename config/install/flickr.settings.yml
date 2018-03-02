@@ -1,4 +1,4 @@
-flickr_api_key: ''
-flickr_api_secret: ''
+api_key: ''
+api_secret: ''
 host_uri: 'http://flickr.com'
 api_uri: 'https://api.flickr.com/services/rest/'
