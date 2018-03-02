@@ -22,9 +22,9 @@ class FlickrClient {
   /**
    * Constructor for the FlickrClient class.
    */
-  public function __construct(ConfigFactory $config_factory) {
+  public function __construct(ConfigFactory $config) {
     // Get the config.
-    $this->config = $config_factory->get('flickr.settings');
+    $this->config = $config->get('flickr.settings');
 
     $this->api_uri = $this->config->get('api_uri');
     $this->host_uri = $this->config->get('host_uri');
@@ -37,18 +37,13 @@ class FlickrClient {
 
   }
 
+
   /**
-   * Submit a request to Flickr.
+   * @param $method
+   * @param array $args
+   * @param bool $cacheable
    *
-   * @param string $method
-   *   String method name.
-   * @param string $args
-   *   Associative array of arguments names and values.
-   * @param string $cacheable
-   *   Boolean indicating if it's safe cache the results of this request.
-   *
-   * @return array
-   *   an array with the the result of the request, or FALSE on error.
+   * @return bool|mixed
    */
   public function flickrRequest($method, $args, $cacheable = TRUE) {
     // Build the arg_hash.
@@ -119,7 +114,7 @@ class FlickrClient {
     $body = $response->getBody();
 
     // TODO Add some checking.
-    return json_decode((string) $body);
+    return json_decode((string) $body, TRUE);
   }
 
 }
