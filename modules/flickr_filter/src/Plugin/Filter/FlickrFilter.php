@@ -25,7 +25,7 @@ class FlickrFilter extends FilterBase {
    * {@inheritdoc}
    */
   public function process($text, $langcode) {
-    $new_text = preg_replace_callback('/\[flickr-photo:(.+?)\]/', 'self::flickr_filter_callback_photo', $text);
+    $new_text = preg_replace_callback('/\[flickr-photo:(.+?)\]/', 'self::callbackPhoto', $text);
 
     // $text = preg_replace_callback('/\[flickr-photoset:(.+?)\]/', 'flickr_filter_callback_album', $text);
     //    $text = preg_replace_callback('/\[flickr-group:(.+?)\]/', 'flickr_filter_callback_group', $text);
@@ -92,8 +92,8 @@ class FlickrFilter extends FilterBase {
   /**
    * Filter callback for a photo.
    */
-  private function flickr_filter_callback_photo($matches) {
-    list($config, $attribs) = $this->flickr_filter_split_config($matches[1]);
+  private function callbackPhoto($matches) {
+    list($config, $attribs) = $this->splitConfig($matches[1]);
 
     if (isset($config['id'])) {
 
@@ -162,7 +162,7 @@ class FlickrFilter extends FilterBase {
    * into an associative array with two sub-arrays. The first sub-array are
    * parameters for the request, the second are HTML attributes (class and style).
    */
-  public function flickr_filter_split_config($string) {
+  private function splitConfig($string) {
     $config = [];
     $attribs = [];
 
