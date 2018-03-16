@@ -2,9 +2,12 @@
 
 namespace Drupal\flickr_filter\Plugin\Filter;
 use Drupal\Component\Utility\Xss;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\flickr\Service\Helpers;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a filter to insert Flickr photo.
@@ -19,20 +22,49 @@ use Drupal\Core\Form\FormStateInterface;
  *   },
  * )
  */
-class FlickrFilter extends FilterBase {
+class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * @var \Drupal\flickr\Service\Helpers
+   */
+  protected $helpers;
+
+  /**
+   * FlickrFilter constructor.
+   *
+   * @param array $configuration
+   * @param $plugin_id
+   * @param $plugin_definition
+   * @param \Drupal\flickr\Service\Helpers $helpers
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, Helpers $helpers) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->helpers = $helpers;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('flickr.helpers')
+    );
+  }
 
   /**
    * {@inheritdoc}
    */
   public function process($text, $langcode) {
-    $new_text = preg_replace_callback('/\[flickr-photo:(.+?)\]/', 'self::callbackPhoto', $text);
-
-    // $text = preg_replace_callback('/\[flickr-photoset:(.+?)\]/', 'flickr_filter_callback_album', $text);
+    $text = preg_replace_callback('/\[flickr-photo:(.+?)\]/', 'self::callbackPhoto', $text);
+    $text = preg_replace_callback('/\[flickr-photoset:(.+?)\]/', 'self::callbackPhotosets', $text);
     //    $text = preg_replace_callback('/\[flickr-group:(.+?)\]/', 'flickr_filter_callback_group', $text);
     //    $text = preg_replace_callback('/\[flickr-gallery:(.+?)\]/', 'flickr_filter_callback_gallery', $text);
     //    $text = preg_replace_callback('/\[flickr-user:(.+?)\]/', 'flickr_filter_callback_album', $text);
     //    $text = preg_replace_callback('/\[flickr-favorites:(.+?)\]/', 'flickr_filter_callback_favorites', $text);.
-    return new FilterProcessResult($new_text);
+    return new FilterProcessResult($text);
   }
 
   /**
@@ -60,7 +92,7 @@ class FlickrFilter extends FilterBase {
 
     $form['flickr_filter_heading'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Wrap the album title in an HTML heading tag (only for the text filter)'),
+      '#title' => $this->t('Wrap the photoset title in an HTML heading tag (only for the text filter)'),
       '#required' => TRUE,
       '#default_value' => $this->settings['flickr_filter_heading'],
       '#description' => $this->t("Use 'p' for no style, e.g. 'h3' for a heading or 'none' to not display an album title."),
@@ -97,7 +129,7 @@ class FlickrFilter extends FilterBase {
 
     if (isset($config['id'])) {
 
-      if ($photo = \Drupal::service('flickr_api.photos')->photosGetInfo($config['id'])) {
+      if ($photo = $this->helpers->photos->photosGetInfo($config['id'])) {
         if (!isset($config['size'])) {
           $config['size'] = $this->settings['flickr_filter_default_size'];
         }
@@ -115,34 +147,12 @@ class FlickrFilter extends FilterBase {
             break;
         }
 
-        $sizes = \Drupal::service('flickr_api.helpers')->photoSizes();
-        $photoSizes = \Drupal::service('flickr_api.photos')->photosGetSizes($photo['id']);
+        $sizes = $this->helpers->flickrApiHelpers->photoSizes();
+        $photoSizes = $this->helpers->photos->photosGetSizes($photo['id']);
 
-        if (\Drupal::service('flickr_api.helpers')->inArrayR($sizes[$config['size']]['label'], $photoSizes)) {
-          $photoUrl = \Drupal::service('flickr_api.helpers')->photoImgUrl($photo, $config['size']);
-
-          $photoimg = [
-            '#theme' => 'image',
-            '#style_name' => NULL,
-            '#uri' => $photoUrl,
-            '#alt' => $photo['title']['_content'],
-            '#title' => $photo['title']['_content'],
-          // '#width' => $photo_size['height'],
-          //            '#height' => $photo_size['width'],
-          //            '#attributes' => array('class' => $attributes['class']),.
-          ];
-
-          $img = [
-            '#theme' => 'flickr_photo',
-            '#photo' => $photoimg,
-            '#photo_page_url' => $photo['urls']['url'][0]['_content'],
-          // '#size' => $config['size'],
-          //            '#attribs' => $attribs,
-          //            '#min_title' => $config['mintitle'],
-          //            '#min_metadata' => $config['minmetadata'],.
-          ];
-
-          return render($img);
+        if ($this->helpers->flickrApiHelpers->inArrayR($sizes[$config['size']]['label'], $photoSizes)) {
+          $photoimg = $this->helpers->themePhoto($photo, $config['size']);
+          return render($photoimg);
         }
         else {
           // Generate an "empty" image of the requested size containing a message.
@@ -154,6 +164,119 @@ class FlickrFilter extends FilterBase {
       }
     }
     return '';
+  }
+
+
+  /**
+   * Filter callback for a user or set.
+   */
+  function callbackPhotosets($matches) {
+    list($config, $attribs) = $this->splitConfig($matches[1]);
+
+    if (!isset($attribs['class'])) {
+      $attribs['class'] = NULL;
+    }
+    if (!isset($attribs['style'])) {
+      $attribs['style'] = NULL;
+    }
+    if (!isset($config['size'])) {
+      $config['size'] = NULL;
+    }
+    if (!isset($config['num'])) {
+      $config['num'] = NULL;
+    }
+//    if (!isset($config['media'])) {
+//      $config['media'] = 'photos';
+//    }
+//    if (!isset($config['heading'])) {
+//      $config['heading'] = $this->settings['flickr_filter_heading'];
+//    }
+//    if (!isset($config['tags'])) {
+//      $config['tags'] = '';
+//    }
+//    else {
+//      $config['tags'] = str_replace("/", ",", $config['tags']);
+//    }
+//    if (!isset($config['location'])) {
+//      $config['location'][0] = NULL;
+//      $config['location'][1] = NULL;
+//      $config['location'][2] = NULL;
+//    }
+//    else {
+//      $config['location'] = explode("/", $config['location']);
+//      if (!isset($config['location'][2])) {
+//        $config['location'][2] = NULL;
+//      }
+//    }
+//    if (!isset($config['date'])) {
+//      $config['date'][0] = NULL;
+//      $config['date'][1] = NULL;
+//    }
+//    else {
+//      $config['date'] = explode("|", $config['date']);
+//      if (!isset($config['date'][1])) {
+//        $config['date'][1] = NULL;
+//      }
+//    }
+//    if (!isset($config['count'])) {
+//      $config['count'] = variable_get('flickr_counter', 1) ? 'true' : 'false';
+//    }
+//    if (!isset($config['extend'])) {
+//      $config['extend'] = variable_get('flickr_extend', 1);
+//    }
+//    else {
+//      $config['extend'] = $config['extend'] == 'false' ? 0 : 1;
+//    }
+//    if (!isset($config['tag_mode'])) {
+//      $config['tag_mode'] = 'context';
+//    }
+//    if (!isset($config['mintitle'])) {
+//      $config['mintitle'] = NULL;
+//    }
+//    if (!isset($config['minmetadata'])) {
+//      $config['minmetadata'] = NULL;
+//    }
+//    if (!isset($config['filter'])) {
+//      $config['filter'] = NULL;
+//    }
+//
+//    switch ($config['filter']) {
+//      case 'interesting':
+//        $config['filter'] = 'interestingness-desc';
+//        break;
+//
+//      case 'relevant':
+//        $config['filter'] = 'relevance';
+//        break;
+//    }
+
+    if (!isset($config['sort'])) {
+      $config['sort'] = 'unsorted';
+    }
+
+    switch ($config['sort']) {
+      case 'taken':
+        $config['sort'] = 'date-taken-desc';
+        break;
+
+      case 'posted':
+        $config['sort'] = 'date-posted-desc';
+        break;
+    }
+
+
+    $response = \Drupal::service('flickr_api.photosets')->photosetsGetPhotos(
+      $config['id'],
+      [
+        'per_page' => $config['num'],
+        'extras' => 'date_upload,date_taken,license,geo,tags,views,media',
+        'media' => 'photos',
+      ],
+      1
+    );
+
+    $photos = $this->helpers->themePhotos($response['photo'], $config['size']);
+    return $photos;
   }
 
   /**
