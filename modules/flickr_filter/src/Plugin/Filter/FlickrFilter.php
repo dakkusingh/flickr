@@ -125,7 +125,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
    * Filter callback for a photo.
    */
   private function callbackPhoto($matches) {
-    list($config, $attribs) = $this->splitConfig($matches[1]);
+    list($config, $attribs) = $this->helpers->splitConfig($matches[1]);
 
     if (isset($config['id'])) {
 
@@ -133,12 +133,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
         if (!isset($config['size'])) {
           $config['size'] = $this->settings['flickr_filter_default_size'];
         }
-        // If (!isset($config['mintitle'])) {
-        //          $config['mintitle'] = $this->settings['flickr_title_suppress_on_small'];
-        //        }
-        //        if (!isset($config['minmetadata'])) {
-        //          $config['minmetadata'] = $this->settings['flickr_metadata_suppress_on_small'];
-        //        }.
+
         switch ($config['size']) {
           case "x":
           case "y":
@@ -166,89 +161,27 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
     return '';
   }
 
-
   /**
    * Filter callback for a user or set.
    */
   function callbackPhotosets($matches) {
-    list($config, $attribs) = $this->splitConfig($matches[1]);
+    list($config, $attribs) = $this->helpers->splitConfig($matches[1]);
 
     if (!isset($attribs['class'])) {
       $attribs['class'] = NULL;
     }
+
     if (!isset($attribs['style'])) {
       $attribs['style'] = NULL;
     }
+
     if (!isset($config['size'])) {
       $config['size'] = NULL;
     }
+
     if (!isset($config['num'])) {
       $config['num'] = NULL;
     }
-//    if (!isset($config['media'])) {
-//      $config['media'] = 'photos';
-//    }
-//    if (!isset($config['heading'])) {
-//      $config['heading'] = $this->settings['flickr_filter_heading'];
-//    }
-//    if (!isset($config['tags'])) {
-//      $config['tags'] = '';
-//    }
-//    else {
-//      $config['tags'] = str_replace("/", ",", $config['tags']);
-//    }
-//    if (!isset($config['location'])) {
-//      $config['location'][0] = NULL;
-//      $config['location'][1] = NULL;
-//      $config['location'][2] = NULL;
-//    }
-//    else {
-//      $config['location'] = explode("/", $config['location']);
-//      if (!isset($config['location'][2])) {
-//        $config['location'][2] = NULL;
-//      }
-//    }
-//    if (!isset($config['date'])) {
-//      $config['date'][0] = NULL;
-//      $config['date'][1] = NULL;
-//    }
-//    else {
-//      $config['date'] = explode("|", $config['date']);
-//      if (!isset($config['date'][1])) {
-//        $config['date'][1] = NULL;
-//      }
-//    }
-//    if (!isset($config['count'])) {
-//      $config['count'] = variable_get('flickr_counter', 1) ? 'true' : 'false';
-//    }
-//    if (!isset($config['extend'])) {
-//      $config['extend'] = variable_get('flickr_extend', 1);
-//    }
-//    else {
-//      $config['extend'] = $config['extend'] == 'false' ? 0 : 1;
-//    }
-//    if (!isset($config['tag_mode'])) {
-//      $config['tag_mode'] = 'context';
-//    }
-//    if (!isset($config['mintitle'])) {
-//      $config['mintitle'] = NULL;
-//    }
-//    if (!isset($config['minmetadata'])) {
-//      $config['minmetadata'] = NULL;
-//    }
-//    if (!isset($config['filter'])) {
-//      $config['filter'] = NULL;
-//    }
-//
-//    switch ($config['filter']) {
-//      case 'interesting':
-//        $config['filter'] = 'interestingness-desc';
-//        break;
-//
-//      case 'relevant':
-//        $config['filter'] = 'relevance';
-//        break;
-//    }
 
     if (!isset($config['sort'])) {
       $config['sort'] = 'unsorted';
@@ -265,7 +198,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
     }
 
 
-    $response = \Drupal::service('flickr_api.photosets')->photosetsGetPhotos(
+    $photosetPhotos = $this->helpers->photosets->photosetsGetPhotos(
       $config['id'],
       [
         'per_page' => $config['num'],
@@ -275,43 +208,8 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       1
     );
 
-    $photos = $this->helpers->themePhotos($response['photo'], $config['size']);
+    $photos = $this->helpers->themePhotos($photosetPhotos['photo'], $config['size']);
     return $photos;
-  }
-
-  /**
-   * Parse parameters to the fiter from a format like:
-   * id=26159919@N00, size=m,num=9,class="something",style="float:left;border:1px"
-   * into an associative array with two sub-arrays. The first sub-array are
-   * parameters for the request, the second are HTML attributes (class and style).
-   */
-  private function splitConfig($string) {
-    $config = [];
-    $attribs = [];
-
-    // Put each setting on its own line.
-    $string = str_replace(',', "\n", $string);
-
-    // Break them up around the equal sign (=).
-    preg_match_all('/([a-zA-Z_.]+)=([-@\/0-9a-zA-Z :;_.\|\%"\'&°]+)/', $string, $parts, PREG_SET_ORDER);
-
-    foreach ($parts as $part) {
-      // Normalize to lowercase and remove extra spaces.
-      $name = strtolower(trim($part[1]));
-      $value = htmlspecialchars_decode(trim($part[2]));
-
-      // Remove undesired but tolerated characters from the value.
-      $value = str_replace(str_split('"\''), '', $value);
-
-      if ($name == 'style' || $name == 'class') {
-        $attribs[$name] = $value;
-      }
-      else {
-        $config[$name] = $value;
-      }
-    }
-
-    return [$config, $attribs];
   }
 
 }
