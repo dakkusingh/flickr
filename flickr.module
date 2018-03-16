@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function flickr_theme() {
+  return [
+    'flickr_photo' => [
+      'variables' => ['photo' => NULL, 'photo_page_url' => NULL],
+    ],
+  ];
+}
