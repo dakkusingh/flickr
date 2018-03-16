@@ -25,7 +25,6 @@ class Helpers {
     $this->photosets = $photosets;
   }
 
-
   /**
    * Parse parameters to the fiter from a format like:
    * id=26159919@N00, size=m,num=9,class="something",style="float:left;border:1px"
@@ -61,6 +60,9 @@ class Helpers {
     return [$config, $attribs];
   }
 
+  /**
+   *
+   */
   public function themePhoto($photo, $size) {
     $img = [
       '#theme' => 'image',
@@ -86,6 +88,9 @@ class Helpers {
     return $photoimg;
   }
 
+  /**
+   *
+   */
   public function themePhotos($photos, $size) {
     $album = '';
     foreach ($photos as $photo) {

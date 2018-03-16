@@ -164,7 +164,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
   /**
    * Filter callback for a user or set.
    */
-  function callbackPhotosets($matches) {
+  public function callbackPhotosets($matches) {
     list($config, $attribs) = $this->helpers->splitConfig($matches[1]);
 
     if (!isset($attribs['class'])) {
@@ -196,7 +196,6 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
         $config['sort'] = 'date-posted-desc';
         break;
     }
-
 
     $photosetPhotos = $this->helpers->photosets->photosetsGetPhotos(
       $config['id'],

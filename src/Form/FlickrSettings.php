@@ -4,8 +4,6 @@ namespace Drupal\flickr\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Link;
-use Drupal\Core\Url;
 
 /**
  * Implements the Flickr Settings form controller.
