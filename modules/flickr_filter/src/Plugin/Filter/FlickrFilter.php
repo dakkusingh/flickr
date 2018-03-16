@@ -60,10 +60,13 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
   public function process($text, $langcode) {
     $text = preg_replace_callback('/\[flickr-photo:(.+?)\]/', 'self::callbackPhoto', $text);
     $text = preg_replace_callback('/\[flickr-photoset:(.+?)\]/', 'self::callbackPhotosets', $text);
+
+    // TODO Implement the rest of the options.
     //    $text = preg_replace_callback('/\[flickr-group:(.+?)\]/', 'flickr_filter_callback_group', $text);
     //    $text = preg_replace_callback('/\[flickr-gallery:(.+?)\]/', 'flickr_filter_callback_gallery', $text);
     //    $text = preg_replace_callback('/\[flickr-user:(.+?)\]/', 'flickr_filter_callback_album', $text);
-    //    $text = preg_replace_callback('/\[flickr-favorites:(.+?)\]/', 'flickr_filter_callback_favorites', $text);.
+    //    $text = preg_replace_callback('/\[flickr-favorites:(.+?)\]/', 'flickr_filter_callback_favorites', $text);
+
     return new FilterProcessResult($text);
   }
 
@@ -101,6 +104,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function tips($long = FALSE) {
+    // TODO Make this text a bit more informative.
     if ($long) {
       return $this->t(
         'Embed Flickr photos using @embed. Values for imagesize is optional, if left off the default values configured on the %filter input filter will be used',
@@ -111,7 +115,11 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       );
     }
     else {
-      return $this->t('Embed Flickr photo using @embed', ['@embed' => '[flickr-photo:id=<photo_id>, size=<imagesize>]']);
+      return $this->t('Embed Flickr photo using @embed',
+        [
+          '@embed' => '[flickr-photo:id=<photo_id>, size=<imagesize>]'
+        ]
+      );
     }
   }
 
@@ -152,6 +160,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
 
       }
     }
+
     return '';
   }
 
@@ -202,6 +211,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
     );
 
     $photos = $this->helpers->themePhotos($photosetPhotos['photo'], $config['size']);
+
     return $photos;
   }
 
