@@ -71,22 +71,16 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
+    $sizes = $this->helpers->flickrApiHelpers->photoSizes();
+    foreach ($sizes as $key => $size) {
+      $options[$key] = $size['description']->render();
+    }
+
     $form['flickr_filter_default_size'] = [
       '#type' => 'select',
       '#title' => $this->t('Default size for single photos'),
       '#default_value' => $this->settings['flickr_filter_default_size'],
-      // TODO use standard sizes.
-      '#options' => [
-        's' => $this->t('s: 75 px square'),
-        't' => $this->t('t: 100 px on longest side'),
-        'q' => $this->t('q: 150 px square'),
-        'm' => $this->t('m: 240 px on longest side'),
-        'n' => $this->t('n: 320 px on longest side (!)'),
-        '-' => $this->t('-: 500 px on longest side'),
-        'z' => $this->t('z: 640 px on longest side'),
-        'c' => $this->t('c: 800 px on longest side (!)'),
-        'b' => $this->t('b: 1024 px on longest side'),
-      ],
+      '#options' => $options,
       '#description' => $this->t("A default Flickr size to use if no size is specified, for example [flickr-photo:id=3711935987].<br />TAKE CARE, the c size (800px) is missing on Flickr images uploaded before March 1, 2012!"),
     ];
 
