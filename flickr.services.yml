@@ -1,0 +1,4 @@
+services:
+  flickr.helpers:
+    class: Drupal\flickr\Service\Helpers
+    arguments: ["@flickr_api.photos", "@flickr_api.helpers", "@flickr_api.photosets"]
