@@ -1,0 +1,4 @@
+flickr.stylez:
+  css:
+    component:
+      css/flickr.stylez.css: {}

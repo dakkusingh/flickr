@@ -1,0 +1,26 @@
+.flickr-photo a {
+  border: 0;
+}
+
+.flickr-photo img{
+  display: block;
+}
+
+.flickr-photo {
+  float: left;
+  margin-right: 0.4em;
+  margin-bottom: 0.4em;
+  display: block;
+}
+
+.flickr-photos {
+
+}
+
+.flickr-photoset {
+  clear: both;
+}
+
+.flickr-photoset-title {
+
+}
