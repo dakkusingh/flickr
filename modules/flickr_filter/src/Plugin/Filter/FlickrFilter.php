@@ -144,20 +144,9 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
             break;
         }
 
-        $sizes = $this->helpers->flickrApiHelpers->photoSizes();
-        $photoSizes = $this->helpers->photos->photosGetSizes($photo['id']);
+        $photoimg = $this->helpers->themePhoto($photo, $config['size']);
 
-        if ($this->helpers->flickrApiHelpers->inArrayR($sizes[$config['size']]['label'], $photoSizes)) {
-          $photoimg = $this->helpers->themePhoto($photo, $config['size']);
-          return render($photoimg);
-        }
-        else {
-          // Generate an "empty" image of the requested size containing a message.
-          $string = $sizes[$config['size']]['description'];
-          preg_match("/\d*px/", $string, $matches);
-          return '<span class="flickr-wrap" style="width: ' . $matches[0] . '; height: ' . $matches[0] . '; border:solid 1px;"><span class="flickr-empty">' . t('The requested image size is not available for this photo on Flickr (uploaded when this size was not offered yet). Try another size or re-upload this photo on Flickr.') . '</span></span>';
-        }
-
+        return render($photoimg);
       }
     }
 
@@ -203,7 +192,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
     $photosetPhotos = $this->helpers->photosets->photosetsGetPhotos(
       $config['id'],
       [
-        'per_page' => $config['num'],
+        'per_page' => (int)$config['num'],
         'extras' => 'date_upload,date_taken,license,geo,tags,views,media',
         'media' => 'photos',
       ],
@@ -211,8 +200,9 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
     );
 
     $photos = $this->helpers->themePhotos($photosetPhotos['photo'], $config['size']);
+    $photoset = $this->helpers->themePhotoset($photos, $photosetPhotos['title']);
 
-    return $photos;
+    return render($photoset);
   }
 
 }
