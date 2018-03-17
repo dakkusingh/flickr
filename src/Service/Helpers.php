@@ -61,44 +61,82 @@ class Helpers {
   }
 
   /**
+   * @param $photo
+   * @param $size
    *
+   * @return array
    */
   public function themePhoto($photo, $size) {
-    $img = [
-      '#theme' => 'image',
-      '#style_name' => NULL,
-      '#uri' => $this->flickrApiHelpers->photoImgUrl($photo, $size),
-      '#alt' => $photo['title']['_content'],
-      '#title' => $photo['title']['_content'],
-      // '#width' => $photo_size['height'],
-      //            '#height' => $photo_size['width'],
-      //            '#attributes' => array('class' => $attributes['class']),.
-    ];
+    $photoSizes = $this->photos->photosGetSizes($photo['id']);
+    $sizes = $this->flickrApiHelpers->photoSizes();
 
-    $photoimg = [
-      '#theme' => 'flickr_photo',
-      '#photo' => $img,
-      '#photo_page_url' => $photo['urls']['url'][0]['_content'],
-      // '#size' => $config['size'],
-      //            '#attribs' => $attribs,
-      //            '#min_title' => $config['mintitle'],
-      //            '#min_metadata' => $config['minmetadata'],.
-    ];
+    if ($this->flickrApiHelpers->inArrayR($sizes[$size]['label'], $photoSizes)) {
+      $img = [
+        '#theme' => 'image',
+        '#style_name' => 'flickr-photo-' . $size,
+        '#uri' => $this->flickrApiHelpers->photoImgUrl($photo, $size),
+        '#alt' => $photo['title']['_content'] . ' by ' . $photo['owner']['realname'],
+        '#title' => $photo['title']['_content'] . ' by ' . $photo['owner']['realname'],
+      ];
 
-    return $photoimg;
+      $photoimg = [
+        '#theme' => 'flickr_photo',
+        '#photo' => $img,
+        '#photo_page_url' => $photo['urls']['url'][0]['_content'],
+        '#style_name' => 'flickr-photo-' . $size,
+        '#attached' => [
+          'library' => [
+            'flickr/flickr.stylez',
+          ],
+        ],
+      ];
+
+      return $photoimg;
+    }
   }
 
   /**
+   * @param $photos
+   * @param $size
    *
+   * @return array
    */
   public function themePhotos($photos, $size) {
-    $album = '';
     foreach ($photos as $photo) {
-      $flickrPhoto = $this->photos->photosGetInfo($photo['id']);
-      $photoimg = $this->themePhoto($flickrPhoto, $size);
-      $album .= render($photoimg);
+      $themedPhotos[] = $this->themePhoto(
+        $this->photos->photosGetInfo($photo['id']),
+        $size
+      );
     }
-    return $album;
+
+    return [
+      '#theme' => 'flickr_photos',
+      '#photos' => $themedPhotos,
+      '#attached' => [
+        'library' => [
+          'flickr/flickr.stylez',
+        ],
+      ],
+    ];
+  }
+
+  /**
+   * @param $photos
+   * @param $title
+   *
+   * @return array
+   */
+  public function themePhotoset($photos, $title) {
+    return [
+      '#theme' => 'flickr_photoset',
+      '#photos' => $photos,
+      '#title' => $title,
+      '#attached' => [
+        'library' => [
+          'flickr/flickr.stylez',
+        ],
+      ],
+    ];
   }
 
 }
