@@ -117,7 +117,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
     else {
       return $this->t('Embed Flickr photo using @embed',
         [
-          '@embed' => '[flickr-photo:id=<photo_id>, size=<imagesize>]'
+          '@embed' => '[flickr-photo:id=<photo_id>, size=<imagesize>]',
         ]
       );
     }
@@ -192,7 +192,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
     $photosetPhotos = $this->helpers->photosets->photosetsGetPhotos(
       $config['id'],
       [
-        'per_page' => (int)$config['num'],
+        'per_page' => (int) $config['num'],
         'extras' => 'date_upload,date_taken,license,geo,tags,views,media',
         'media' => 'photos',
       ],

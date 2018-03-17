@@ -2,7 +2,7 @@
   border: 0;
 }
 
-.flickr-photo img{
+.flickr-photo img {
   display: block;
 }
 
@@ -14,7 +14,6 @@
 }
 
 .flickr-photos {
-
 }
 
 .flickr-photoset {
@@ -22,5 +21,4 @@
 }
 
 .flickr-photoset-title {
-
 }
