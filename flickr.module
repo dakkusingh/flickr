@@ -10,7 +10,13 @@
 function flickr_theme() {
   return [
     'flickr_photo' => [
-      'variables' => ['photo' => NULL, 'photo_page_url' => NULL],
+      'variables' => ['photo' => NULL, 'photo_page_url' => NULL, 'style_name' => NULL],
+    ],
+    'flickr_photos' => [
+      'variables' => ['photos' => NULL],
+    ],
+    'flickr_photoset' => [
+      'variables' => ['photos' => NULL, 'title' => NULL],
     ],
   ];
 }
