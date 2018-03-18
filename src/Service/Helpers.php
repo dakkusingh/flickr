@@ -66,7 +66,7 @@ class Helpers {
    *
    * @return array
    */
-  public function themePhoto($photo, $size) {
+  public function themePhoto($photo, $size, $caption = 0) {
     $photoSizes = $this->photos->photosGetSizes($photo['id']);
     $sizes = $this->flickrApiHelpers->photoSizes();
 
@@ -82,6 +82,7 @@ class Helpers {
       $photoimg = [
         '#theme' => 'flickr_photo',
         '#photo' => $img,
+        '#caption' => $caption,
         '#photo_page_url' => $photo['urls']['url'][0]['_content'],
         '#style_name' => 'flickr-photo-' . $size,
         '#attached' => [
@@ -90,6 +91,10 @@ class Helpers {
           ],
         ],
       ];
+
+      if ($caption == 1) {
+        $photoimg['#caption_data'] = $this->themeCaption($photo, $size, $caption);
+      }
 
       return $photoimg;
     }
@@ -101,11 +106,12 @@ class Helpers {
    *
    * @return array
    */
-  public function themePhotos($photos, $size) {
+  public function themePhotos($photos, $size, $caption = 0) {
     foreach ($photos as $photo) {
       $themedPhotos[] = $this->themePhoto(
         $this->photos->photosGetInfo($photo['id']),
-        $size
+        $size,
+        $caption
       );
     }
 
@@ -136,6 +142,19 @@ class Helpers {
           'flickr/flickr.stylez',
         ],
       ],
+    ];
+  }
+
+  public function themeCaption($photo, $size, $caption) {
+    return [
+      '#theme' => 'flickr_photo_caption',
+      '#caption' => $caption,
+      '#caption_realname' => $photo['owner']['realname'],
+      '#caption_title' => $photo['title']['_content'],
+      '#caption_description' => $photo['description']['_content'],
+      '#caption_dateuploaded' => $photo['dateuploaded'],
+      '#style_name' => 'flickr-photo-' . $size,
+      '#photo_size' => $size,
     ];
   }
 

@@ -22,3 +22,21 @@
 
 .flickr-photoset-title {
 }
+
+.flickr-photo-caption{
+
+}
+
+.flickr-photo-caption-title{
+  font-weight: bold;
+}
+
+.flickr-photo-caption-realname{
+  font-style: italic;
+}
+
+.flickr-photo-caption-dateuploaded {
+  font-size: .7em;
+  display: block;
+  text-transform: uppercase;
+}

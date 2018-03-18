@@ -10,7 +10,24 @@
 function flickr_theme() {
   return [
     'flickr_photo' => [
-      'variables' => ['photo' => NULL, 'photo_page_url' => NULL, 'style_name' => NULL],
+      'variables' => [
+        'photo' => NULL,
+        'photo_page_url' => NULL,
+        'style_name' => NULL,
+        'caption' => NULL,
+        'caption_data' => NULL,
+      ],
+    ],
+    'flickr_photo_caption' => [
+      'variables' => [
+        'photo_size' => NULL,
+        'style_name' => NULL,
+        'caption' => NULL,
+        'caption_realname' => NULL,
+        'caption_title' => NULL,
+        'caption_description' => NULL,
+        'caption_dateuploaded' => NULL,
+      ],
     ],
     'flickr_photos' => [
       'variables' => ['photos' => NULL],

@@ -97,6 +97,15 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       '#maxlength' => 4,
     ];
 
+    $form['flickr_filter_caption'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Display captions for every Flickr photo'),
+      '#required' => TRUE,
+      '#default_value' => $this->settings['flickr_filter_caption'],
+      '#description' => $this->t("If selected, flickr photos will display caption."),
+      '#options' => [0 => 'No', 1 => 'Yes'],
+    ];
+
     return $form;
   }
 
@@ -136,6 +145,10 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
           $config['size'] = $this->settings['flickr_filter_default_size'];
         }
 
+        if (!isset($config['caption'])) {
+          $config['caption'] = $this->settings['flickr_filter_caption'];
+        }
+
         switch ($config['size']) {
           case "x":
           case "y":
@@ -144,7 +157,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
             break;
         }
 
-        $photoimg = $this->helpers->themePhoto($photo, $config['size']);
+        $photoimg = $this->helpers->themePhoto($photo, $config['size'], $config['caption']);
 
         return render($photoimg);
       }
@@ -189,6 +202,10 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
         break;
     }
 
+    if (!isset($config['caption'])) {
+      $config['caption'] = $this->settings['flickr_filter_caption'];
+    }
+
     $photosetPhotos = $this->helpers->photosets->photosetsGetPhotos(
       $config['id'],
       [
@@ -199,7 +216,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       1
     );
 
-    $photos = $this->helpers->themePhotos($photosetPhotos['photo'], $config['size']);
+    $photos = $this->helpers->themePhotos($photosetPhotos['photo'], $config['size'], $config['caption']);
     $photoset = $this->helpers->themePhotoset($photos, $photosetPhotos['title']);
 
     return render($photoset);
