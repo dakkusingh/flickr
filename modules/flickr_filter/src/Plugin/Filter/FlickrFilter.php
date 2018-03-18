@@ -86,16 +86,6 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       '#description' => $this->t("A default Flickr size to use if no size is specified, for example [flickr-photo:id=3711935987].<br />TAKE CARE, the c size (800px) is missing on Flickr images uploaded before March 1, 2012!"),
     ];
 
-    $form['flickr_filter_heading'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Wrap the photoset title in an HTML heading tag (only for the text filter)'),
-      '#required' => TRUE,
-      '#default_value' => $this->settings['flickr_filter_heading'],
-      '#description' => $this->t("Use 'p' for no style, e.g. 'h3' for a heading or 'none' to not display an album title."),
-      '#size' => 4,
-      '#maxlength' => 4,
-    ];
-
     $form['flickr_filter_caption'] = [
       '#type' => 'select',
       '#title' => $this->t('Display captions for every Flickr photo'),
