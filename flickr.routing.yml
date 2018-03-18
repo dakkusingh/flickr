@@ -1,7 +1,0 @@
-flickr.settings:
-  path: 'admin/config/media/flickr'
-  defaults:
-    _form:  '\Drupal\flickr\Form\FlickrSettings'
-    _title: 'Flickr Integration Settings'
-  requirements:
-    _permission: 'administer site configuration'
