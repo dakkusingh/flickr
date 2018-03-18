@@ -18,6 +18,7 @@
 
 .flickr-photoset {
   clear: both;
+  display: table;
 }
 
 .flickr-photoset-title {

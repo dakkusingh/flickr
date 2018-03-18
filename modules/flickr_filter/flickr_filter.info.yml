@@ -4,4 +4,4 @@ description: 'Flickr Filter module provides configurable filter to display Flick
 package: Flickr
 core: 8.x
 dependencies:
-  - flickr
+  - flickr:flickr
