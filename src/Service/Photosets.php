@@ -6,12 +6,19 @@ use Drupal\flickr_api\Service\Photosets as FlickrApiPhotosets;
 use Drupal\flickr_api\Service\Helpers as FlickrApiHelpers;
 
 /**
- * Service class for Flickr Photosets.
+ * Class Photosets
+ *
+ * @package Drupal\flickr\Service
  */
 class Photosets {
 
   /**
-   * Constructor for the Flickr API Groups class.
+   * Photosets constructor.
+   *
+   * @param \Drupal\flickr_api\Service\Photosets $flickrApiPhotosets
+   * @param \Drupal\flickr\Service\Photos $photos
+   * @param \Drupal\flickr\Service\Helpers $helpers
+   * @param \Drupal\flickr_api\Service\Helpers $flickrApiHelpers
    */
   public function __construct(FlickrApiPhotosets $flickrApiPhotosets,
                               Photos $photos,

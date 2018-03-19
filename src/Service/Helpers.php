@@ -5,12 +5,16 @@ namespace Drupal\flickr\Service;
 use Drupal\flickr_api\Service\Helpers as FlickrApiHelpers;
 
 /**
- * Service class for Flickr Helpers.
+ * Class Helpers
+ *
+ * @package Drupal\flickr\Service
  */
 class Helpers {
 
   /**
-   * Constructor for the Flickr Helpers class.
+   * Helpers constructor.
+   *
+   * @param \Drupal\flickr_api\Service\Helpers $flickrApiHelpers
    */
   public function __construct(FlickrApiHelpers $flickrApiHelpers) {
     // Flickr API Helpers.

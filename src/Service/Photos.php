@@ -6,12 +6,18 @@ use Drupal\flickr_api\Service\Photos as FlickrApiPhotos;
 use Drupal\flickr_api\Service\Helpers as FlickrApiHelpers;
 
 /**
- * Service class for Flickr Photos.
+ * Class Photos
+ *
+ * @package Drupal\flickr\Service
  */
 class Photos {
 
   /**
-   * Constructor for the Flickr Photos class.
+   * Photos constructor.
+   *
+   * @param \Drupal\flickr_api\Service\Photos $flickrApiPhotos
+   * @param \Drupal\flickr\Service\Helpers $helpers
+   * @param \Drupal\flickr_api\Service\Helpers $flickrApiHelpers
    */
   public function __construct(FlickrApiPhotos $flickrApiPhotos,
                               Helpers $helpers,
@@ -30,20 +36,25 @@ class Photos {
   /**
    * @param $photo
    * @param $size
+   * @param int $caption
    *
    * @return array
    */
   public function themePhoto($photo, $size, $caption = 0) {
-    $photoSizes = $this->flickrApiPhotos->photosGetSizes($photo['id']);
-    $sizes = $this->flickrApiHelpers->photoSizes();
+    $photoSize = $this->photoGetSize($photo['id'], $size);
 
-    if ($this->flickrApiHelpers->inArrayR($sizes[$size]['label'], $photoSizes)) {
+    if ($photoSize != FALSE) {
       $img = [
         '#theme' => 'image',
-        '#style_name' => 'flickr-photo-' . $size,
+        '#style_name' => 'flickr-photo-' . $size . '-' . $photoSize['aspect'],
         '#uri' => $this->flickrApiHelpers->photoImgUrl($photo, $size),
         '#alt' => $photo['title']['_content'] . ' by ' . $photo['owner']['realname'],
         '#title' => $photo['title']['_content'] . ' by ' . $photo['owner']['realname'],
+        '#attributes' => [
+          'width' => $photoSize['width'],
+          'height' => $photoSize['height'],
+          //'style' => 'width: ' . $photoSize['width'] . 'px; height: ' . $photoSize['width'] . 'px;',
+        ],
       ];
 
       $photoimg = [
@@ -51,7 +62,9 @@ class Photos {
         '#photo' => $img,
         '#caption' => $caption,
         '#photo_page_url' => $photo['urls']['url'][0]['_content'],
-        '#style_name' => 'flickr-photo-' . $size,
+        '#style_name' => 'flickr-photo-' . $size . '-' . $photoSize['aspect'],
+        '#width' => $photoSize['width'],
+        '#height' => $photoSize['height'],
         '#attached' => [
           'library' => [
             'flickr/flickr.stylez',
@@ -70,6 +83,7 @@ class Photos {
   /**
    * @param $photos
    * @param $size
+   * @param int $caption
    *
    * @return array
    */
@@ -93,6 +107,13 @@ class Photos {
     ];
   }
 
+  /**
+   * @param $photo
+   * @param $size
+   * @param $caption
+   *
+   * @return array
+   */
   public function themeCaption($photo, $size, $caption) {
     return [
       '#theme' => 'flickr_photo_caption',
@@ -104,6 +125,52 @@ class Photos {
       '#style_name' => 'flickr-photo-' . $size,
       '#photo_size' => $size,
     ];
+  }
+
+  /**
+   * @param $photoId
+   * @param $size
+   *
+   * @return bool
+   */
+  public function photoGetSize($photoId, $size) {
+    $photoSizes = $this->flickrApiPhotos->photosGetSizes($photoId);
+    $sizes = $this->flickrApiHelpers->photoSizes();
+    $label = $sizes[$size]['label'];
+
+    foreach ($photoSizes as $size) {
+      if ($size['label'] == $label) {
+        $size['width'] = (int) $size['width'];
+        $size['height'] = (int) $size['height'];
+        $size['aspect'] = $this->photoCalculateAspectRatio($size['width'], $size['height']);
+        return $size;
+      }
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * @param $width
+   * @param $height
+   *
+   * @return string
+   */
+  public function photoCalculateAspectRatio($width, $height) {
+    $aspectRatio = (int)$width / (int)$height;
+
+    if ($aspectRatio > 1) {
+      // Image is Landscape.
+      return 'landscape';
+    }
+    if ($aspectRatio < 1) {
+      // Image is Portrait.
+      return 'portrait';
+    }
+    else {
+      // Image is Square.
+      return 'square';
+    }
   }
 
 }

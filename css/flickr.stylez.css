@@ -41,3 +41,29 @@
   display: block;
   text-transform: uppercase;
 }
+
+
+.flickr-photo-n-landscape{
+  max-width: 320px;
+}
+
+.flickr-photo-n-portrait{
+  max-width: 240px;
+}
+
+.flickr-photo-n-square{
+  max-width: 320px;
+}
+
+
+.flickr-photo-m-landscape{
+  max-width: 240px;
+}
+
+.flickr-photo-m-portrait{
+  max-width: 160px;
+}
+
+.flickr-photo-m-square{
+  max-width: 240px;
+}

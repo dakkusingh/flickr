@@ -16,6 +16,8 @@ function flickr_theme() {
         'style_name' => NULL,
         'caption' => NULL,
         'caption_data' => NULL,
+        'width' => NULL,
+        'height' => NULL,
       ],
     ],
     'flickr_photo_caption' => [
