@@ -3,7 +3,6 @@
 namespace Drupal\flickr\Service;
 
 use Drupal\flickr_api\Service\Photos as FlickrApiPhotos;
-use Drupal\flickr\Service\Helpers as FlickrHelpers;
 use Drupal\flickr_api\Service\Helpers as FlickrApiHelpers;
 
 /**
