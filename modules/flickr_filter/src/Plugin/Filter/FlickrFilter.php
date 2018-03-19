@@ -183,22 +183,67 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
   public function callbackPhotosets($matches) {
     list($config, $attribs) = $this->helpers->splitConfig($matches[1]);
 
+    // Class.
+    // TODO Implement this.
     if (!isset($attribs['class'])) {
       $attribs['class'] = NULL;
     }
 
+    // Style.
+    // TODO Implement this.
     if (!isset($attribs['style'])) {
       $attribs['style'] = NULL;
     }
 
+    // Size.
     if (!isset($config['size'])) {
       $config['size'] = NULL;
     }
 
+    // Photo count.
     if (!isset($config['num'])) {
       $config['num'] = NULL;
     }
 
+    // Media.
+    if (!isset($config['media'])) {
+      $config['media'] = 'photos';
+    }
+
+    // Tags.
+    if (!isset($config['tags'])) {
+      $config['tags'] = '';
+    }
+    else {
+      $config['tags'] = str_replace("/", ",", $config['tags']);
+    }
+
+    // Location options.
+    if (!isset($config['location'])) {
+      $config['location'][0] = NULL;
+      $config['location'][1] = NULL;
+      $config['location'][2] = NULL;
+    }
+    else {
+      $config['location'] = explode("/", $config['location']);
+      if (!isset($config['location'][2])) {
+        $config['location'][2] = NULL;
+      }
+    }
+
+    // Date options.
+    if (!isset($config['date'])) {
+      $config['date'][0] = NULL;
+      $config['date'][1] = NULL;
+    }
+    else {
+      $config['date'] = explode("|", $config['date']);
+      if (!isset($config['date'][1])) {
+        $config['date'][1] = NULL;
+      }
+    }
+
+    // Sort options.
     if (!isset($config['sort'])) {
       $config['sort'] = 'unsorted';
     }
@@ -213,15 +258,49 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
         break;
     }
 
+    // Show Caption.
     if (!isset($config['caption'])) {
       $config['caption'] = $this->settings['flickr_filter_caption'];
     }
 
+    // Tag Mode.
+    if (!isset($config['tag_mode'])) {
+      $config['tag_mode'] = 'context';
+    }
+
+    // Mintitle?
+    // TODO Implement this.
+    if (!isset($config['mintitle'])) {
+      $config['mintitle'] = NULL;
+    }
+
+    // Minmetsdata?
+    // TODO Implement this.
+    if (!isset($config['minmetadata'])) {
+      $config['minmetadata'] = NULL;
+    }
+
+    // Filter
+    // TODO Implement this.
+    if (!isset($config['filter'])) {
+      $config['filter'] = NULL;
+    }
+
+    switch ($config['filter']) {
+      case 'interesting':
+        $config['filter'] = 'interestingness-desc';
+        break;
+
+      case 'relevant':
+        $config['filter'] = 'relevance';
+        break;
+    }
+
+    // Showtime.
     $photosetPhotos = $this->photosets->flickrApiPhotosets->photosetsGetPhotos(
       $config['id'],
       [
         'per_page' => (int) $config['num'],
-        'extras' => 'date_upload,date_taken,license,geo,tags,views,media',
         'media' => 'photos',
       ],
       1
