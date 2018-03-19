@@ -6,7 +6,7 @@ use Drupal\flickr_api\Service\Photos as FlickrApiPhotos;
 use Drupal\flickr_api\Service\Helpers as FlickrApiHelpers;
 
 /**
- * Class Photos
+ * Class Photos.
  *
  * @package Drupal\flickr\Service
  */
@@ -53,7 +53,7 @@ class Photos {
         '#attributes' => [
           'width' => $photoSize['width'],
           'height' => $photoSize['height'],
-          //'style' => 'width: ' . $photoSize['width'] . 'px; height: ' . $photoSize['width'] . 'px;',
+          // 'style' => 'width: ' . $photoSize['width'] . 'px; height: ' . $photoSize['width'] . 'px;',.
         ],
       ];
 
@@ -157,7 +157,7 @@ class Photos {
    * @return string
    */
   public function photoCalculateAspectRatio($width, $height) {
-    $aspectRatio = (int)$width / (int)$height;
+    $aspectRatio = (int) $width / (int) $height;
 
     if ($aspectRatio > 1) {
       // Image is Landscape.

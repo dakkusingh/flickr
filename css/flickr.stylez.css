@@ -24,15 +24,14 @@
 .flickr-photoset-title {
 }
 
-.flickr-photo-caption{
-
+.flickr-photo-caption {
 }
 
-.flickr-photo-caption-title{
+.flickr-photo-caption-title {
   font-weight: bold;
 }
 
-.flickr-photo-caption-realname{
+.flickr-photo-caption-realname {
   font-style: italic;
 }
 
@@ -43,27 +42,27 @@
 }
 
 
-.flickr-photo-n-landscape{
+.flickr-photo-n-landscape {
   max-width: 320px;
 }
 
-.flickr-photo-n-portrait{
+.flickr-photo-n-portrait {
   max-width: 240px;
 }
 
-.flickr-photo-n-square{
+.flickr-photo-n-square {
   max-width: 320px;
 }
 
 
-.flickr-photo-m-landscape{
+.flickr-photo-m-landscape {
   max-width: 240px;
 }
 
-.flickr-photo-m-portrait{
+.flickr-photo-m-portrait {
   max-width: 160px;
 }
 
-.flickr-photo-m-square{
+.flickr-photo-m-square {
   max-width: 240px;
 }

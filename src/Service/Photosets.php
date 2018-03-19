@@ -6,7 +6,7 @@ use Drupal\flickr_api\Service\Photosets as FlickrApiPhotosets;
 use Drupal\flickr_api\Service\Helpers as FlickrApiHelpers;
 
 /**
- * Class Photosets
+ * Class Photosets.
  *
  * @package Drupal\flickr\Service
  */

@@ -5,7 +5,7 @@ namespace Drupal\flickr\Service;
 use Drupal\flickr_api\Service\Helpers as FlickrApiHelpers;
 
 /**
- * Class Helpers
+ * Class Helpers.
  *
  * @package Drupal\flickr\Service
  */

@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\flickr\Service\Helpers;
 use Drupal\flickr\Service\Photosets;
 use Drupal\flickr\Service\Photos;
+
 /**
  * Provides a filter to insert Flickr photo.
  *
