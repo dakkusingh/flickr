@@ -6,9 +6,10 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\flickr\Service\Helpers;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
+use Drupal\flickr\Service\Helpers;
+use Drupal\flickr\Service\Photosets;
+use Drupal\flickr\Service\Photos;
 /**
  * Provides a filter to insert Flickr photo.
  *
@@ -30,16 +31,35 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
   protected $helpers;
 
   /**
+   * @var \Drupal\flickr\Service\Photos
+   */
+  protected $photos;
+
+  /**
+   * @var \Drupal\flickr\Service\Photosets
+   */
+  protected $photosets;
+
+  /**
    * FlickrFilter constructor.
    *
    * @param array $configuration
    * @param $plugin_id
    * @param $plugin_definition
    * @param \Drupal\flickr\Service\Helpers $helpers
+   * @param \Drupal\flickr\Service\Photos $photos
+   * @param \Drupal\flickr\Service\Photosets $photosets
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, Helpers $helpers) {
+  public function __construct(array $configuration,
+                              $plugin_id,
+                              $plugin_definition,
+                              Helpers $helpers,
+                              Photos $photos,
+                              Photosets $photosets) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->helpers = $helpers;
+    $this->photos = $photos;
+    $this->photosets = $photosets;
   }
 
   /**
@@ -50,7 +70,9 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('flickr.helpers')
+      $container->get('flickr.helpers'),
+      $container->get('flickr.photos'),
+      $container->get('flickr.photosets')
     );
   }
 
@@ -129,7 +151,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
 
     if (isset($config['id'])) {
 
-      if ($photo = $this->helpers->photos->photosGetInfo($config['id'])) {
+      if ($photo = $this->photos->flickrApiPhotos->photosGetInfo($config['id'])) {
         if (!isset($config['size'])) {
           $config['size'] = $this->settings['flickr_filter_default_size'];
         }
@@ -146,7 +168,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
             break;
         }
 
-        $photoimg = $this->helpers->themePhoto($photo, $config['size'], $config['caption']);
+        $photoimg = $this->photos->themePhoto($photo, $config['size'], $config['caption']);
 
         return render($photoimg);
       }
@@ -195,7 +217,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       $config['caption'] = $this->settings['flickr_filter_caption'];
     }
 
-    $photosetPhotos = $this->helpers->photosets->photosetsGetPhotos(
+    $photosetPhotos = $this->photosets->flickrApiPhotosets->photosetsGetPhotos(
       $config['id'],
       [
         'per_page' => (int) $config['num'],
@@ -205,8 +227,8 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       1
     );
 
-    $photos = $this->helpers->themePhotos($photosetPhotos['photo'], $config['size'], $config['caption']);
-    $photoset = $this->helpers->themePhotoset($photos, $photosetPhotos['title']);
+    $photos = $this->photos->themePhotos($photosetPhotos['photo'], $config['size'], $config['caption']);
+    $photoset = $this->photosets->themePhotoset($photos, $photosetPhotos['title']);
 
     return render($photoset);
   }
