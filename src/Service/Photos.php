@@ -40,8 +40,9 @@ class Photos {
    *
    * @return array
    */
-  public function themePhoto($photo, $size, $caption = 0) {
+  public function themePhoto($photo, $size, $caption = 0, $parent = NULL) {
     $photoSize = $this->photoGetSize($photo['id'], $size);
+    $photoSizeLarge = $this->photoGetSize($photo['id'], 'b');
 
     if ($photoSize != FALSE) {
       $img = [
@@ -62,6 +63,8 @@ class Photos {
         '#photo' => $img,
         '#caption' => $caption,
         '#photo_page_url' => $photo['urls']['url'][0]['_content'],
+        '#photo_image_large' => $photoSizeLarge['source'],
+        '#parent' => $parent,
         '#style_name' => 'flickr-photo-' . $size . '-' . $photoSize['aspect'],
         '#width' => $photoSize['width'],
         '#height' => $photoSize['height'],
@@ -85,14 +88,17 @@ class Photos {
    * @param $size
    * @param int $caption
    *
+   * @param null $parent
+   *
    * @return array
    */
-  public function themePhotos($photos, $size, $caption = 0) {
+  public function themePhotos($photos, $size, $caption = 0, $parent = NULL) {
     foreach ($photos as $photo) {
       $themedPhotos[] = $this->themePhoto(
         $this->flickrApiPhotos->photosGetInfo($photo['id']),
         $size,
-        $caption
+        $caption,
+        $parent
       );
     }
 

@@ -307,7 +307,7 @@ class FlickrFilter extends FilterBase implements ContainerFactoryPluginInterface
       1
     );
 
-    $photos = $this->photos->themePhotos($photosetPhotos['photo'], $config['size'], $config['caption']);
+    $photos = $this->photos->themePhotos($photosetPhotos['photo'], $config['size'], $config['caption'], $photosetPhotos['id']);
     $photoset = $this->photosets->themePhotoset($photos, $photosetPhotos['title']);
 
     return render($photoset);
