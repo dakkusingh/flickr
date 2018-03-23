@@ -111,7 +111,8 @@ code_sniffer: &code_sniffer
     - run:
         working_directory: /var/www/html
         command: |
-          ./code-sniffer.sh $CIRCLE_PROJECT_REPONAME
+#          ./code-sniffer.sh $CIRCLE_PROJECT_REPONAME
+          ./vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml modules/$CIRCLE_PROJECT_REPONAME
 
     - store_test_results:
         path: /var/www/html/artifacts/phpcs
