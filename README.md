@@ -1,4 +1,5 @@
 # Flickr Drupal Integration
+[![CircleCI](https://circleci.com/gh/dakkusingh/flickr.svg?style=svg)](https://circleci.com/gh/dakkusingh/flickr)
 
 Flickr Integration for Drupal provides fully configurable 
 image galleries from Flickr website. 
